@@ -1,7 +1,7 @@
 <p align="center">
   <img width="200px" src="./public/images/logo-full.png">
   
-  <h2 align="center">Custos Portal</h2>
+  <h2 align="center">Sendly Portal</h2>
   <p align="center">
     A modern web portal for centralized authorization management
   </p>
@@ -11,17 +11,14 @@
 
 ## Overview
 
-**Custos** is the centralized authorization service for the Linden platform. It serves as the single source of truth for all access control logic and data across the platform.
+**Sendly** is envisioned as a unified email-sending service. It acts as an abstraction layer over multiple email providers (e.g. Postmark, SendGrid, Resend), providing a consistent API for other services to send emails and track their delivery status.
 
 ### Core Responsibilities
 
-- **Centralize authorization decisions** for all services
-- **Enforce role-based and resource-based access control**
-- **Expose APIs to**:
-  - Check permissions
-  - Assign and manage roles
-  - Query permissions for UI display
-- **Serve as the source of truth** for all access control logic and data
+- **Unified API** for sending emails across multiple providers (Postmark, SendGrid Resend, etc.)
+- **Delivery Tracking** to monitor and log the status of sent emails in a centralized way
+- **Provider Abstraction** to decouple services from specific email vendor implementations
+- **Reliability and Failover** to ensure email delivery by managing multiple provider backends
 
 ## Getting Started
 
@@ -36,7 +33,7 @@
 
    ```bash
    git clone <repository-url>
-   cd custos-portal
+   cd sendly-portal
    ```
 
 2. **Set up environment variables**
@@ -77,13 +74,13 @@
 1. Build the image
 
    ```bash
-   docker build -t custos-portal .
+   docker build -t sendly-portal .
    ```
 
 2. Run the container
 
    ```bash
-   docker run -p 3000:3000 custos-portal:latest
+   docker run -p 3000:3000 sendly-portal:latest
    ```
 
 ### Production Build

@@ -52,7 +52,7 @@ export function Header({ isExpanded, setIsExpanded, action, withSidebar, apps }:
                   <Avatar className="avatar-hover">
                     <AvatarImage src="/images/logo.png" />
                   </Avatar>
-                  <span className="text-base font-bold">Custos</span>
+                  <span className="text-base font-bold">Sendly</span>
                 </div>
               </Link>
               {withSidebar && (
