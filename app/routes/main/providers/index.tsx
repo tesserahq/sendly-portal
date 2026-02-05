@@ -28,6 +28,12 @@ export default function Providers() {
     return <AppPreloader />
   }
   return (
-    <ProvidersContent apiUrl={apiUrl!} token={token!} nodeEnv={nodeEnv!} pagination={pagination} />
+    <ProvidersContent
+      apiUrl={apiUrl!}
+      token={token!}
+      nodeEnv={nodeEnv!}
+      pagination={pagination}
+      authLoading={isLoading}
+    />
   )
 }

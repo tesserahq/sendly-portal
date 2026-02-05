@@ -12,14 +12,21 @@ interface ProvidersContentProps {
     page: number
     size: number
   }
+  authLoading: boolean
 }
 
-export function ProvidersContent({ apiUrl, token, nodeEnv, pagination }: ProvidersContentProps) {
+export function ProvidersContent({
+  apiUrl,
+  token,
+  nodeEnv,
+  pagination,
+  authLoading,
+}: ProvidersContentProps) {
   const { data, isLoading, error } = useProviders(
     { apiUrl, token, nodeEnv },
     { page: pagination.page, size: pagination.size },
     {
-      enabled: !!token,
+      enabled: !!token && !authLoading,
     }
   )
 
