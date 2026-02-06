@@ -1,5 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ProviderType } from '@/resources/queries/provider/provider.type'
+import { getStatusBadgeProps } from '@/utils/helpers/badge.helper'
+import { Badge } from '@/modules/shadcn/ui/badge'
 
 export const columns: ColumnDef<ProviderType>[] = [
   {
@@ -26,7 +28,12 @@ export const columns: ColumnDef<ProviderType>[] = [
     size: 200,
     cell: ({ row }) => {
       const { enabled } = row.original
-      return <div className="max-w-[200px] truncate">{enabled ? 'Yes' : 'No'}</div>
+      const badge = getStatusBadgeProps(enabled)
+      return (
+        <Badge variant="outline" className={badge.className}>
+          <span className="text-xs">{enabled ? 'Enabled' : 'Disabled'}</span>
+        </Badge>
+      )
     },
   },
   {
@@ -35,7 +42,12 @@ export const columns: ColumnDef<ProviderType>[] = [
     size: 200,
     cell: ({ row }) => {
       const { default: defaultProvider } = row.original
-      return <div className="max-w-[200px] truncate">{defaultProvider ? 'Yes' : 'No'}</div>
+      const badge = getStatusBadgeProps(defaultProvider)
+      return (
+        <Badge variant="outline" className={badge.className}>
+          <span className="text-xs">{defaultProvider ? 'Yes' : 'No'}</span>
+        </Badge>
+      )
     },
   },
   {
