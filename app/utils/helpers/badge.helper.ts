@@ -3,5 +3,5 @@ export const getStatusBadgeProps = (status?: boolean) => {
     return { className: 'border-green-500 text-green-600' }
   }
 
-  return { className: 'border-red-500 text-red-600' }
+  return { className: 'border-gray-500 text-gray-600' }
 }
