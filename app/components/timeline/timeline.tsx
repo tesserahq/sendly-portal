@@ -53,7 +53,7 @@ export const EmailStatusTimeline: React.FC<EmailStatusTimelineProps> = ({ data }
               <Button
                 variant={'outline'}
                 size="xs"
-                className={'w-fit rounded-xs ml-5 text-muted-foreground bg-transparent py-0 h-6'}
+                className={'w-fit rounded-xs ml-5 text-muted-foreground bg-transparent h-6'}
                 onClick={() => setOpen(true)}>
                 <span className="text-xs capitalize">More Details</span>
               </Button>
