@@ -5,11 +5,12 @@ interface IPageContentProps {
   title: string
   actions?: React.ReactNode
   children: React.ReactNode
+  className?: string
 }
 
-export function DetailContent({ title, actions, children }: IPageContentProps) {
+export function DetailContent({ title, actions, children, className }: IPageContentProps) {
   return (
-    <div className="animate-slide-up">
+    <div className="animate-slide-up p-4">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -17,7 +18,7 @@ export function DetailContent({ title, actions, children }: IPageContentProps) {
             {actions && <div>{actions}</div>}
           </div>
         </CardHeader>
-        <CardContent className="pt-0">{children}</CardContent>
+        <CardContent className={`pt-0 ${className}`}>{children}</CardContent>
       </Card>
     </div>
   )

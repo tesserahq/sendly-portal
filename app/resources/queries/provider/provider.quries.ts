@@ -5,9 +5,6 @@ import { ProviderType } from './provider.type'
 
 const PROVIDERS_ENDPOINT = '/providers/'
 
-/**
- * Get paginated memberships for a role
- */
 export async function getProviders(
   config: IQueryConfig,
   params: IQueryParams
