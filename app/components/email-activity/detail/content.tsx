@@ -4,6 +4,7 @@ import { EmailStatusTimeline } from '@/components/timeline'
 import { useEmailActivityDetail } from '@/resources/hooks/email-activity/use-email-activity'
 import { IQueryConfig } from '@/resources/queries'
 import { DateTime, EmptyContent } from 'tessera-ui'
+import { EmailViewer } from './email-viewer/email-viewer'
 
 interface EmailActivityDetailContentProps {
   config: IQueryConfig
@@ -28,8 +29,10 @@ export function EmailActivityDetailContent({ config, emailID }: EmailActivityDet
   }
 
   return (
-    <DetailContent title="Email Activity Detail" className="grid grid-cols-9 grid-rows-1">
-      <div className="d-list col-span-7 col-start-2">
+    <DetailContent
+      title="Email Activity Detail"
+      className="grid grid-cols-9 grid-rows-[max-content_max-content] gap-y-20 h-fit">
+      <div className="d-list col-span-7 col-start-2 row-start-1">
         <div className="d-item border-none">
           <dt className="d-label text-end pr-5">Provider:</dt>
           <dd className="d-content capitalize">{data?.provider || 'N/A'}</dd>
@@ -44,11 +47,16 @@ export function EmailActivityDetailContent({ config, emailID }: EmailActivityDet
         </div>
         <div className="d-item border-none items-start!">
           <dt className="d-label text-end pr-5">To:</dt>
-          <dd className="d-content w-full">
+          <dd className="d-content w-full overflow-visible!">
             <EmailStatusTimeline data={data} />
           </dd>
         </div>
       </div>
+      <EmailViewer
+        html={data?.body || ''}
+        raw={data?.body || ''}
+        className="w-full col-span-9 row-start-2"
+      />
     </DetailContent>
   )
 }

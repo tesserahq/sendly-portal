@@ -18,4 +18,15 @@ export interface EmailActivityType {
   error_message: string
   created_at: string
   updated_at: string
+  events: EmailEvent[]
+}
+
+export interface EmailEvent {
+  id: string
+  emaild_id: string
+  created_at: string
+  updated_at: string
+  event_type: string
+  event_timestamp: string
+  details: Record<string, string>
 }
