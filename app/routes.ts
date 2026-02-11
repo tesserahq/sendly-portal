@@ -10,6 +10,7 @@ export default [
   // Private Routes
   layout('layouts/private.layouts.tsx', [
     route('activity', 'routes/main/activity/index.tsx'),
+    route('activity/:emailID', 'routes/main/activity/detail.tsx'),
     route('providers', 'routes/main/providers/index.tsx'),
   ]),
 
