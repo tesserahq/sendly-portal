@@ -6,7 +6,7 @@ import { getEmailEventTypeBadge } from '@/utils/helpers/badge.helper'
 import { DateTime } from 'tessera-ui'
 import { TimelineErrorDialog } from './timeline.errordialog'
 import { Button } from '@/modules/shadcn/ui/button'
-import { eventTypeConfig, statusConfig } from './timeline.config'
+import { eventTypeConfig } from './timeline.config'
 
 interface EmailStatusTimelineProps {
   data: EmailActivityType
@@ -16,7 +16,7 @@ type EventType = keyof typeof eventTypeConfig
 
 export const EmailStatusTimeline: React.FC<EmailStatusTimelineProps> = ({ data }) => {
   const [open, setOpen] = useState(false)
-  const config = statusConfig[data.status]
+  const config = eventTypeConfig[data.status]
 
   return (
     <div className="flex flex-col w-full">
