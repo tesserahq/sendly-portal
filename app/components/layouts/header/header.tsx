@@ -8,7 +8,7 @@ import { cn } from '@shadcn/lib/utils'
 import { Link, useSubmit } from 'react-router'
 import { Button } from '@shadcn/ui/button'
 import { PanelLeft } from 'lucide-react'
-import { AppMenu, AppMenuProps } from 'tessera-ui'
+import { AppMenuProps } from 'tessera-ui'
 
 interface IHeaderProps {
   apiUrl: string
@@ -76,7 +76,6 @@ export function Header({ isExpanded, setIsExpanded, action, withSidebar, apps }:
 
             {/* Right content */}
             <div className="flex items-center space-x-1 lg:space-x-5">
-              <AppMenu apps={apps || []} />
               {/* <NewResourceShortcut /> */}
               <ProfileMenu
                 selectedTheme={requestInfo.userPrefs.theme || 'system'}

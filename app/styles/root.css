@@ -45,7 +45,7 @@ body {
     --muted: 30, 40%, 94%;
     --muted-foreground: 21, 15%, 40%;
 
-    --accent: 21, 100%, 75%; /* #FFB347 */
+    --accent: 21, 100%, 90%; /* #FFB347 */
     --accent-foreground: 21, 100%, 20%;
 
     --destructive: 0, 84%, 60%;
@@ -65,8 +65,8 @@ body {
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 30, 100%, 97%;
-    --sidebar-foreground: 21, 100%, 20%;
+    --sidebar-background: 0, 0%, 100%;
+    --sidebar-foreground: 0, 0%, 9%;
     --sidebar-primary: 21, 100%, 55%;
     --sidebar-primary-foreground: 0, 0%, 100%;
     --sidebar-accent: 21, 100%, 90%;
@@ -93,7 +93,7 @@ body {
     --muted: 20, 25%, 22%;
     --muted-foreground: 30, 30%, 70%;
 
-    --accent: 21, 100%, 45%; /* deeper orange */
+    --accent: 21, 60%, 40%; /* deeper orange */
     --accent-foreground: 30, 100%, 95%;
 
     --destructive: 0, 84%, 60%;
