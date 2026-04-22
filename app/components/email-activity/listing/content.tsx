@@ -30,8 +30,6 @@ export function EmailActivityListing({
     }
   )
 
-  console.log(data)
-
   if (error) {
     return (
       <EmptyContent
