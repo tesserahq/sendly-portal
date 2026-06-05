@@ -61,11 +61,13 @@ export function ProvidersContent({
 
   return (
     <div className="h-full page-content">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex items-center animate-slide-up justify-between">
         <h1 className="page-title">Providers</h1>
       </div>
 
-      <DataTable columns={columns} data={data?.items || []} meta={meta} isLoading={isLoading} />
+      <div className="animate-slide-up">
+        <DataTable columns={columns} data={data?.items || []} meta={meta} isLoading={isLoading} />
+      </div>
     </div>
   )
 }

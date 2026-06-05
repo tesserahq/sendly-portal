@@ -1,29 +1,18 @@
-import { AppPreloader } from '@/components/loader/pre-loader'
-import { useApp } from '@/context/AppContext'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRequestInfo } from '@/hooks/useRequestInfo'
 import { ROUTE_PATH as THEME_PATH } from '@/routes/resources/update-theme'
 import { SITE_CONFIG } from '@/utils/config/site.config'
-import { Building2, History } from 'lucide-react'
-import { Outlet, useLoaderData, useNavigate, useParams, useSubmit } from 'react-router'
-import { Layout, MainItemProps, TesseraProvider } from 'tessera-ui'
-
-export function loader() {
-  const identiesApiUrl = process.env.IDENTIES_API_URL
-
-  return {
-    identiesApiUrl,
-  }
-}
+import { Building2, FileText, History, LayoutTemplate } from 'lucide-react'
+import { Outlet, useNavigate, useParams, useSubmit } from 'react-router'
+import { AuthGuard, Layout, MainItemProps } from 'tessera-ui'
 
 export default function PrivateLayout() {
-  const { identiesApiUrl } = useLoaderData<typeof loader>()
-
-  const { isLoading, token } = useApp()
   const requestInfo = useRequestInfo()
   const submit = useSubmit()
   const params = useParams()
   const navigate = useNavigate()
-  const shouldCollapseSidebar = Boolean(params.emailID)
+  const shouldCollapseSidebar =
+    Boolean(params.emailID) || Boolean(params.layoutID) || Boolean(params.templateID)
 
   const onSetTheme = (theme: string) => {
     submit(
@@ -36,36 +25,42 @@ export default function PrivateLayout() {
       }
     )
   }
+
   const menuItems: MainItemProps[] = [
     {
       title: 'Providers',
       path: `/providers`,
-      icon: Building2,
+      icon: Building2 as any,
     },
     {
       title: 'Activity',
       path: '/activity',
       icon: History,
     },
+    {
+      title: 'Layouts',
+      path: '/layouts',
+      icon: LayoutTemplate as any,
+    },
+    {
+      title: 'Templates',
+      path: '/templates',
+      icon: FileText as any,
+    },
   ]
 
-  if (isLoading) {
-    return <AppPreloader className="min-h-screen" />
-  }
-
   return (
-    <TesseraProvider identiesApiUrl={identiesApiUrl!} token={token || ''}>
-      <Layout.Main menuItems={menuItems} collapseSidebar={shouldCollapseSidebar}>
-        <Layout.Header
-          actionLogout={() => navigate('/logout')}
-          actionProfile={() => {}}
-          onSetTheme={(theme) => onSetTheme(theme)}
-          selectedTheme={requestInfo.userPrefs.theme || 'system'}
-          defaultLogo="/images/logo.png"
-          title={SITE_CONFIG.siteTitle}
-        />
-        <Outlet />
-      </Layout.Main>
-    </TesseraProvider>
+    <Layout.Main menuItems={menuItems} collapseSidebar={shouldCollapseSidebar}>
+      <Layout.Header
+        actionLogout={() => navigate('/logout')}
+        actionProfile={() => {}}
+        defaultLogo="/images/logo.png"
+        defaultAvatar=""
+        onSetTheme={(theme) => onSetTheme(theme)}
+        selectedTheme={requestInfo.userPrefs.theme || 'system'}
+        title={SITE_CONFIG.siteTitle}
+      />
+      <Outlet />
+    </Layout.Main>
   )
 }

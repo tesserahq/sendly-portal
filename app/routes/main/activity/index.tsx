@@ -1,6 +1,6 @@
 import { EmailActivityListing } from '@/components/email-activity'
 import { AppPreloader } from '@/components/loader/pre-loader'
-import { useApp } from '@/context/AppContext'
+import { useApp } from 'tessera-ui'
 import { ensureCanonicalPagination } from '@/utils/helpers/pagination.helper'
 import { useLoaderData } from 'react-router'
 
@@ -22,9 +22,9 @@ export async function loader({ request }: { request: Request }) {
 
 export default function EmailActivity() {
   const { apiUrl, nodeEnv, pagination } = useLoaderData<typeof loader>()
-  const { token, isLoading } = useApp()
+  const { token, isLoadingIdenties } = useApp()
 
-  if (isLoading) {
+  if (isLoadingIdenties) {
     return <AppPreloader />
   }
 
@@ -34,7 +34,7 @@ export default function EmailActivity() {
       token={token!}
       nodeEnv={nodeEnv!}
       pagination={pagination}
-      authLoading={isLoading}
+      authLoading={isLoadingIdenties}
     />
   )
 }
