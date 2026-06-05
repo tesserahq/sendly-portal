@@ -12,6 +12,7 @@ export function TabButton({
   return (
     <Button
       variant="outline"
+      type="button"
       onClick={onClick}
       className={` px-4 py-2 text-sm rounded-none bg-transparent border-0 border-b-2
         transition-colors duration-500 ease-out ${

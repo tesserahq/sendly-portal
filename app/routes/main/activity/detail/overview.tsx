@@ -1,5 +1,5 @@
 import { EmailActivityDetailContent } from '@/components/email-activity/detail/content'
-import { useApp } from '@/context/AppContext'
+import { useApp } from 'tessera-ui'
 import { useLoaderData } from 'react-router'
 
 export async function loader({ params }: { params: { emailID: string } }) {
@@ -8,7 +8,7 @@ export async function loader({ params }: { params: { emailID: string } }) {
   return { apiUrl, nodeEnv, id: params.emailID }
 }
 
-export default function EmailActivityDetail() {
+export default function EmailActivityOverview() {
   const { apiUrl, nodeEnv, id } = useLoaderData<typeof loader>()
   const { token } = useApp()
 

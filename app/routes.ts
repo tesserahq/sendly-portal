@@ -10,8 +10,29 @@ export default [
   // Private Routes
   layout('layouts/private.layouts.tsx', [
     route('activity', 'routes/main/activity/index.tsx'),
-    route('activity/:emailID', 'routes/main/activity/detail.tsx'),
+    route('activity/:emailID', 'routes/main/activity/detail/layout.tsx', [
+      index('routes/main/activity/detail/index.tsx'),
+      route('overview', 'routes/main/activity/detail/overview.tsx'),
+    ]),
     route('providers', 'routes/main/providers/index.tsx'),
+    route('layouts', 'routes/main/layouts/layout.tsx', [
+      index('routes/main/layouts/index.tsx'),
+      route('new', 'routes/main/layouts/new.tsx'),
+      route(':layoutID', 'routes/main/layouts/detail/layout.tsx', [
+        index('routes/main/layouts/detail/index.tsx'),
+        route('overview', 'routes/main/layouts/detail/overview.tsx'),
+      ]),
+      route(':layoutID/edit', 'routes/main/layouts/edit.tsx'),
+    ]),
+    route('templates', 'routes/main/templates/layout.tsx', [
+      index('routes/main/templates/index.tsx'),
+      route('new', 'routes/main/templates/new.tsx'),
+      route(':templateID', 'routes/main/templates/detail/layout.tsx', [
+        index('routes/main/templates/detail/index.tsx'),
+        route('overview', 'routes/main/templates/detail/overview.tsx'),
+      ]),
+      route(':templateID/edit', 'routes/main/templates/edit.tsx'),
+    ]),
   ]),
 
   // Access Denied

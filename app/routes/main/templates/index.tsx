@@ -1,5 +1,5 @@
 import { AppPreloader } from '@/components/loader/pre-loader'
-import { ProvidersContent } from '@/components/providers/content'
+import { TemplatesListingContent } from '@/components/templates/listing/content'
 import { useApp } from 'tessera-ui'
 import { ensureCanonicalPagination } from '@/utils/helpers/pagination.helper'
 import { useLoaderData } from 'react-router'
@@ -20,15 +20,16 @@ export async function loader({ request }: { request: Request }) {
   return { apiUrl, nodeEnv, pagination }
 }
 
-export default function Providers() {
+export default function Templates() {
   const { apiUrl, nodeEnv, pagination } = useLoaderData<typeof loader>()
   const { token, isLoadingIdenties } = useApp()
 
   if (isLoadingIdenties) {
     return <AppPreloader />
   }
+
   return (
-    <ProvidersContent
+    <TemplatesListingContent
       apiUrl={apiUrl!}
       token={token!}
       nodeEnv={nodeEnv!}
