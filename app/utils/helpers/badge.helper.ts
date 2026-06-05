@@ -16,12 +16,23 @@ export const getEmailStatusBadge = (
   status?: EmailStatusEnum
 ): { variant: BadgeProps['variant']; className: string } => {
   switch (status) {
+    case 'delivered':
     case 'sent':
-      return { variant: 'default', className: 'bg-[#32b554] text-white' }
+      return {
+        variant: 'default',
+        className: 'bg-emerald-400/10 border-emerald-500 text-emerald-500',
+      }
+    case 'bounced':
     case 'failed':
-      return { variant: 'destructive', className: '' }
+      return {
+        variant: 'outline',
+        className: 'border-orange-400 text-orange-400 bg-orange-500/10',
+      }
     case 'queued':
-      return { variant: 'outline', className: 'border-gray-500 text-gray-600' }
+      return {
+        variant: 'outline',
+        className: 'border-yellow-500 text-yellow-500 bg-yellow-500/10',
+      }
     default:
       return { variant: 'outline', className: 'border-gray-500 text-gray-600' }
   }

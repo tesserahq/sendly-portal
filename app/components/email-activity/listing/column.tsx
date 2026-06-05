@@ -44,7 +44,7 @@ export const columns: ColumnDef<EmailActivityType>[] = [
   {
     accessorKey: 'to_email',
     header: 'Recipient',
-    size: 250,
+    size: 200,
     cell: ({ row }) => {
       const { to_email } = row.original
       return (
