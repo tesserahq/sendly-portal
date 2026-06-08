@@ -2,12 +2,7 @@
 Email Activity Type
 */
 
-export type EmailStatusEnum =
-  | 'sent'
-  | 'failed'
-  | 'queued'
-  | 'delivered'
-  | 'bounced'
+export type EmailStatusEnum = 'sent' | 'failed' | 'queued' | 'delivered' | 'bounced'
 
 export interface EmailActivityType {
   from_email: string

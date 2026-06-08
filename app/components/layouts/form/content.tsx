@@ -12,10 +12,8 @@ import { DetailContent } from '@/components/detail-content'
 import { EmptyContent } from 'tessera-ui'
 import { toast } from 'tessera-ui/components'
 import { useHandleApiError } from '@/hooks/useHandleApiError'
-import { HtmlEditor } from '@/components/html-editor/html-editor'
+import { LayoutFormFields } from '@/components/layouts/form/fields'
 import { Button } from '@shadcn/ui/button'
-import { Input } from '@shadcn/ui/input'
-import { Label } from '@shadcn/ui/label'
 import {
   Dialog,
   DialogContent,
@@ -25,7 +23,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@shadcn/ui/dialog'
-import { AlertTriangle, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Link } from 'react-router'
 
 interface LayoutFormContentProps {
@@ -65,7 +63,6 @@ export function LayoutFormContent({ apiUrl, token, nodeEnv, layoutId }: LayoutFo
   const updateMutation = useUpdateLayout(config, layoutId || '')
   const deleteMutation = useDeleteLayout(config)
 
-  const isMissingContentPlaceholder = html.length > 0 && !html.includes('${content}')
   const isSubmitting = createMutation.isPending || updateMutation.isPending
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,62 +144,26 @@ export function LayoutFormContent({ apiUrl, token, nodeEnv, layoutId }: LayoutFo
           </Dialog>
         ) : undefined
       }>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-2xl">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="alias">Alias</Label>
-          <Input
-            id="alias"
-            value={alias}
-            onChange={(e) => setAlias(e.target.value)}
-            placeholder="e.g. transactional-base"
-            required
-          />
-          <p className="text-xs text-muted-foreground">
-            Unique slug identifier — auto-normalised by the API on save.
-          </p>
-        </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <LayoutFormFields
+          name={name}
+          onNameChange={setName}
+          alias={alias}
+          onAliasChange={setAlias}
+          html={html}
+          onHtmlChange={setHtml}
+          htmlHeight="550px"
+        />
 
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="name">Name (optional)</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Transactional Base Layout"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="html">HTML</Label>
-          {isMissingContentPlaceholder && (
-            <div
-              className="flex items-center gap-2 rounded border border-yellow-400 bg-yellow-50 px-3
-                py-2 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300">
-              <AlertTriangle size={14} className="shrink-0" />
-              <span>
-                Layout HTML must contain <code className="font-mono">${'{content}'}</code> — this is
-                where template content will be injected.
-              </span>
-            </div>
-          )}
-          <HtmlEditor
-            id="html"
-            value={html}
-            onChange={setHtml}
-            placeholder={'<html>\n  <body>\n    ${content}\n  </body>\n</html>'}
-            required
-          />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Create Layout'}
-          </Button>
+        <div className="flex items-center justify-end gap-3">
           <Link to={isEditing ? `/layouts/${layoutId}` : '/layouts'}>
             <Button type="button" variant="outline">
               Cancel
             </Button>
           </Link>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Create Layout'}
+          </Button>
         </div>
       </form>
     </DetailContent>

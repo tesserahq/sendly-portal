@@ -35,14 +35,13 @@ export function useTemplates(
   params: IQueryParams,
   options?: { enabled?: boolean; staleTime?: number }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: templateQueryKeys.list(params),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getTemplates(config, params)
       } catch (error: unknown) {
         throw new QueryError((error as Error).message)
@@ -58,14 +57,14 @@ export function useTemplate(
   id: string,
   options?: { enabled?: boolean; staleTime?: number }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: templateQueryKeys.detail(id),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
+
         return await getTemplate(config, id)
       } catch (error: unknown) {
         throw new QueryError((error as Error).message)
