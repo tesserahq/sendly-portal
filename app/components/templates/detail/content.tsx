@@ -5,7 +5,7 @@ import { useTemplate, useDeleteTemplate } from '@/resources/hooks/template/use-t
 import { AppPreloader } from '@/components/loader/pre-loader'
 import { DetailContent } from '@/components/detail-content'
 import { EmailViewer } from '@/components/email-activity/detail/email-viewer/email-viewer'
-import { EmptyContent } from 'tessera-ui'
+import { EmptyContent, ResourceID } from 'tessera-ui'
 import { DateTime } from 'tessera-ui/components'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
 import { Button } from '@shadcn/ui/button'
@@ -91,6 +91,12 @@ export function TemplateOverviewContent({
         }>
         <div className="d-list">
           <div className="d-item">
+            <dt className="d-label">ID</dt>
+            <dd className="d-content font-mono text-sm">
+              <ResourceID value={data.id} />
+            </dd>
+          </div>
+          <div className="d-item">
             <dt className="d-label">Alias</dt>
             <dd className="d-content font-mono text-sm">{data.alias}</dd>
           </div>
@@ -111,11 +117,11 @@ export function TemplateOverviewContent({
             <dd className="d-content">{data.reply_to || 'N/A'}</dd>
           </div>
           <div className="d-item">
-            <dt className="d-label">Layout</dt>
+            <dt className="d-label">Layout ID</dt>
             <dd className="d-content">
-              {data.layout ? (
+              {data.layout_id ? (
                 <Link to={`/layouts/${data.layout_id}`} className="button-link font-mono text-sm">
-                  {data.layout.alias}
+                  {data.layout_id}
                 </Link>
               ) : (
                 'N/A'

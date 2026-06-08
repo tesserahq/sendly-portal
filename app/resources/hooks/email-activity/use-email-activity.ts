@@ -45,14 +45,13 @@ export function useEmailActivityListing(
     staleTime?: number
   }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: emailActivityQueryKeys.list(config, params),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getEmailActivityListing(config, params)
       } catch (error: any) {
         throw new QueryError(error)
@@ -77,14 +76,13 @@ export function useEmailActivityDetail(
     staleTime?: number
   }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: emailActivityQueryKeys.detail(id),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getEmailActivityDetail(config, id)
       } catch (error: any) {
         throw new QueryError(error)

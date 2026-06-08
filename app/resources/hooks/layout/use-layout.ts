@@ -35,14 +35,13 @@ export function useLayouts(
   params: IQueryParams,
   options?: { enabled?: boolean; staleTime?: number }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: layoutQueryKeys.list(params),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getLayouts(config, params)
       } catch (error: unknown) {
         throw new QueryError((error as Error).message)
@@ -58,14 +57,13 @@ export function useLayout(
   id: string,
   options?: { enabled?: boolean; staleTime?: number }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: layoutQueryKeys.detail(id),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getLayout(config, id)
       } catch (error: unknown) {
         throw new QueryError((error as Error).message)

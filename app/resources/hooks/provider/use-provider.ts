@@ -41,14 +41,13 @@ export function useProviders(
     staleTime?: number
   }
 ) {
-  if (!config.token) {
-    throw new QueryError('Token is required', 'TOKEN_REQUIRED')
-  }
-
   return useQuery({
     queryKey: providerQueryKeys.list(params),
     queryFn: async () => {
       try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
         return await getProviders(config, params)
       } catch (error: any) {
         throw new QueryError(error)

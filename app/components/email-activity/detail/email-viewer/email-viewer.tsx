@@ -22,10 +22,10 @@ export function EmailViewer({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TabButton active={tab === 'html'} onClick={() => setTab('html')}>
-            HTML
+            Preview
           </TabButton>
           <TabButton active={tab === 'raw'} onClick={() => setTab('raw')}>
-            Source
+            HTML
           </TabButton>
         </div>
         <Button
