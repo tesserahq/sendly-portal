@@ -15,6 +15,7 @@ export default [
       route('overview', 'routes/main/activity/detail/overview.tsx'),
     ]),
     route('providers', 'routes/main/providers/index.tsx'),
+    route('email-editor-spike', 'routes/main/email-editor-spike.tsx'),
     route('layouts', 'routes/main/layouts/layout.tsx', [
       index('routes/main/layouts/index.tsx'),
       route('new', 'routes/main/layouts/new.tsx'),

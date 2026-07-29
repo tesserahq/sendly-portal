@@ -6,16 +6,25 @@ import { useLoaderData } from 'react-router'
 export async function loader({ params }: { params: { templateID: string } }) {
   const apiUrl = process.env.API_URL
   const nodeEnv = process.env.NODE_ENV
-  return { apiUrl, nodeEnv, id: params.templateID }
+  const vaultaApiUrl = process.env.VAULTA_API_URL
+  return { apiUrl, nodeEnv, vaultaApiUrl, id: params.templateID }
 }
 
 export default function EditTemplate() {
-  const { apiUrl, nodeEnv, id } = useLoaderData<typeof loader>()
+  const { apiUrl, nodeEnv, vaultaApiUrl, id } = useLoaderData<typeof loader>()
   const { token, isLoadingIdenties } = useApp()
 
   if (isLoadingIdenties) {
     return <AppPreloader />
   }
 
-  return <TemplateFormContent apiUrl={apiUrl!} token={token!} nodeEnv={nodeEnv!} templateId={id} />
+  return (
+    <TemplateFormContent
+      apiUrl={apiUrl!}
+      token={token!}
+      nodeEnv={nodeEnv!}
+      vaultaApiUrl={vaultaApiUrl!}
+      templateId={id}
+    />
+  )
 }

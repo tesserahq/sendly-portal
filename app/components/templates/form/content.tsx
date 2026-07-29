@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router'
 import { NodeENVType } from '@/libraries/fetch'
 import {
@@ -13,7 +13,12 @@ import { DetailContent } from '@/components/detail-content'
 import { EmptyContent } from 'tessera-ui'
 import { toast } from 'tessera-ui/components'
 import { useHandleApiError } from '@/hooks/useHandleApiError'
-import { HtmlEditor } from '@/components/html-editor/html-editor'
+import {
+  RichEmailEditor,
+  type RichEmailEditorRef,
+} from '@/components/email-editor/rich-email-editor'
+import Editor from '@monaco-editor/react'
+import { TabButton } from '@/components/email-activity/detail/email-viewer/tab-button'
 import { Button } from '@shadcn/ui/button'
 import { Input } from '@shadcn/ui/input'
 import { Label } from '@shadcn/ui/label'
@@ -28,9 +33,11 @@ import {
   DialogClose,
 } from '@shadcn/ui/dialog'
 import { LayoutFormFields } from '@/components/layouts/form/fields'
-import { Plus, Trash2 } from 'lucide-react'
+import { uploadAssets } from '@/resources/queries/vaulta'
+import { Info, Plus, Trash2 } from 'lucide-react'
 
 const NO_LAYOUT = '__none__'
+const SIX_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 6
 
 const slugify = (v: string) =>
   v
@@ -42,6 +49,7 @@ interface TemplateFormContentProps {
   apiUrl: string
   token: string
   nodeEnv: NodeENVType
+  vaultaApiUrl: string
   templateId?: string
 }
 
@@ -49,6 +57,7 @@ export function TemplateFormContent({
   apiUrl,
   token,
   nodeEnv,
+  vaultaApiUrl,
   templateId,
 }: TemplateFormContentProps) {
   const navigate = useNavigate()
@@ -61,10 +70,13 @@ export function TemplateFormContent({
   const [draftAlias, setDraftAlias] = useState('')
   const [name, setName] = useState('')
   const [subject, setSubject] = useState('')
-  const [html, setHtml] = useState('')
   const [fromEmail, setFromEmail] = useState('')
   const [replyTo, setReplyTo] = useState('')
   const [layoutId, setLayoutId] = useState<string>(NO_LAYOUT)
+  const richEditorRef = useRef<RichEmailEditorRef>(null)
+  const [editorReady, setEditorReady] = useState(false)
+  const [tab, setTab] = useState<'edit' | 'html'>('edit')
+  const [htmlValue, setHtmlValue] = useState('')
 
   const {
     data,
@@ -83,12 +95,22 @@ export function TemplateFormContent({
       setAlias(data.alias)
       setName(data.name)
       setSubject(data.subject)
-      setHtml(data.html)
       setFromEmail(data.from_email || '')
       setReplyTo(data.reply_to || '')
       setLayoutId(data.layout_id || NO_LAYOUT)
     }
   }, [data])
+
+  // Seeding the editor is separate from the rest of `data` because the editor
+  // becomes ready asynchronously (immediatelyRender: false) — if `data` had
+  // already resolved (e.g. from cache) before the editor mounted, a single
+  // effect keyed only on `data` would silently no-op against a still-null
+  // editor. Re-checking whenever `editorReady` flips covers that race.
+  useEffect(() => {
+    if (data && editorReady) {
+      richEditorRef.current?.setContent(data.html)
+    }
+  }, [data, editorReady])
 
   const [newLayoutOpen, setNewLayoutOpen] = useState(false)
   const [newLayoutName, setNewLayoutName] = useState('')
@@ -118,10 +140,33 @@ export function TemplateFormContent({
     }
   }
 
+  const handleTabChange = async (next: 'edit' | 'html') => {
+    if (next === 'html') {
+      setHtmlValue((await richEditorRef.current?.getHTML()) ?? '')
+    } else if (tab === 'html') {
+      richEditorRef.current?.setContent(htmlValue)
+    }
+    setTab(next)
+  }
+
+  const handleUploadImage = async (file: File) => {
+    try {
+      const asset = await uploadAssets(
+        { apiUrl: vaultaApiUrl, token, nodeEnv },
+        { file, expires_in: SIX_MONTHS_IN_SECONDS }
+      )
+      if (!asset) throw new Error('Vaulta upload failed')
+      return { url: asset.url }
+    } catch (error) {
+      handleApiError(error)
+      throw error
+    }
+  }
+
   const isSubmitting = createMutation.isPending || updateMutation.isPending
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
+    const html = tab === 'html' ? htmlValue : ((await richEditorRef.current?.getHTML()) ?? '')
 
     const payload = {
       alias,
@@ -214,7 +259,7 @@ export function TemplateFormContent({
           </Dialog>
         ) : undefined
       }>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           {/* Left sidebar — metadata */}
           <div className="grid grid-cols-4 gap-5">
@@ -314,8 +359,8 @@ export function TemplateFormContent({
 
           {/* Right — HTML editor */}
           <div className="flex flex-col">
-            <div className="flex items-center justify-between">
-              <Label className="mb-0">HTML Body</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label className="mb-0">Content</Label>
               <div className="flex items-center gap-3">
                 <Label htmlFor="layout" className="text-sm mb-0">
                   Layout:
@@ -338,8 +383,7 @@ export function TemplateFormContent({
                     <SelectItem value={NO_LAYOUT}>No layout</SelectItem>
                     {layoutsData?.items.map((layout) => (
                       <SelectItem key={layout.id} value={layout.id}>
-                        {layout.alias}
-                        {layout.name ? ` — ${layout.name}` : ''}
+                        {layout.name}
                       </SelectItem>
                     ))}
                     <SelectItem
@@ -387,7 +431,52 @@ export function TemplateFormContent({
                 </Dialog>
               </div>
             </div>
-            <HtmlEditor value={html} onChange={setHtml} height="550px" />
+            {/* <div
+              className="hidden items-center gap-2 rounded border border-amber-300 bg-amber-50 px-3
+                py-2 text-xs text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 mb-2">
+              <Info size={13} className="shrink-0" />
+              <span>
+                Images are embedded directly in the HTML for now (no image storage yet) — this can
+                make templates large. Proper image hosting is coming soon.
+              </span>
+            </div> */}
+
+            <div className="flex items-center border-b">
+              <TabButton active={tab === 'edit'} onClick={() => handleTabChange('edit')}>
+                Edit
+              </TabButton>
+              <TabButton active={tab === 'html'} onClick={() => handleTabChange('html')}>
+                HTML
+              </TabButton>
+            </div>
+            <div className="border border-t-0 rounded-b overflow-hidden">
+              <div className={tab === 'edit' ? '' : 'hidden'}>
+                <RichEmailEditor
+                  ref={richEditorRef}
+                  height="550px"
+                  onReady={() => setEditorReady(true)}
+                  onUploadImage={handleUploadImage}
+                />
+              </div>
+              {tab === 'html' && (
+                <Editor
+                  height="550px"
+                  language="html"
+                  value={htmlValue}
+                  onChange={(v) => setHtmlValue(v ?? '')}
+                  theme="vs-dark"
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 13,
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    tabSize: 2,
+                    automaticLayout: true,
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
 
@@ -397,11 +486,11 @@ export function TemplateFormContent({
               Cancel
             </Button>
           </Link>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Create Template'}
           </Button>
         </div>
-      </form>
+      </div>
     </DetailContent>
   )
 }
