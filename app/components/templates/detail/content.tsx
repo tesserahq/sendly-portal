@@ -117,11 +117,11 @@ export function TemplateOverviewContent({
             <dd className="d-content">{data.reply_to || 'N/A'}</dd>
           </div>
           <div className="d-item">
-            <dt className="d-label">Layout ID</dt>
+            <dt className="d-label">Layout</dt>
             <dd className="d-content">
               {data.layout_id ? (
-                <Link to={`/layouts/${data.layout_id}`} className="button-link font-mono text-sm">
-                  {data.layout_id}
+                <Link to={`/layouts/${data.layout_id}`} className="button-link text-sm">
+                  {data.layout?.name}
                 </Link>
               ) : (
                 'N/A'

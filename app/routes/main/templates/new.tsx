@@ -6,16 +6,24 @@ import { useLoaderData } from 'react-router'
 export async function loader() {
   const apiUrl = process.env.API_URL
   const nodeEnv = process.env.NODE_ENV
-  return { apiUrl, nodeEnv }
+  const vaultaApiUrl = process.env.VAULTA_API_URL
+  return { apiUrl, nodeEnv, vaultaApiUrl }
 }
 
 export default function NewTemplate() {
-  const { apiUrl, nodeEnv } = useLoaderData<typeof loader>()
+  const { apiUrl, nodeEnv, vaultaApiUrl } = useLoaderData<typeof loader>()
   const { token, isLoadingIdenties } = useApp()
 
   if (isLoadingIdenties) {
     return <AppPreloader />
   }
 
-  return <TemplateFormContent apiUrl={apiUrl!} token={token!} nodeEnv={nodeEnv!} />
+  return (
+    <TemplateFormContent
+      apiUrl={apiUrl!}
+      token={token!}
+      nodeEnv={nodeEnv!}
+      vaultaApiUrl={vaultaApiUrl!}
+    />
+  )
 }
