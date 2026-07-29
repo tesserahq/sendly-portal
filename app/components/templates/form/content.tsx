@@ -1,42 +1,40 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate, Link } from 'react-router'
-import { NodeENVType } from '@/libraries/fetch'
-import {
-  useTemplate,
-  useCreateTemplate,
-  useUpdateTemplate,
-  useDeleteTemplate,
-} from '@/resources/hooks/template/use-template'
-import { useLayouts, useCreateLayout } from '@/resources/hooks/layout/use-layout'
-import { AppPreloader } from '@/components/loader/pre-loader'
 import { DetailContent } from '@/components/detail-content'
-import { EmptyContent } from 'tessera-ui'
-import { toast } from 'tessera-ui/components'
-import { useHandleApiError } from '@/hooks/useHandleApiError'
+import { TabButton } from '@/components/email-activity/detail/email-viewer/tab-button'
 import {
   RichEmailEditor,
   type RichEmailEditorRef,
 } from '@/components/email-editor/rich-email-editor'
-import Editor from '@monaco-editor/react'
-import { TabButton } from '@/components/email-activity/detail/email-viewer/tab-button'
-import { useHtmlValidation } from '@/components/html-editor/use-html-validation'
 import { getHtmlErrors } from '@/components/html-editor/html-validator'
+import { useHtmlValidation } from '@/components/html-editor/use-html-validation'
+import { LayoutFormFields } from '@/components/layouts/form/fields'
+import { AppPreloader } from '@/components/loader/pre-loader'
+import { useHandleApiError } from '@/hooks/useHandleApiError'
+import { NodeENVType } from '@/libraries/fetch'
+import { useCreateLayout, useLayouts } from '@/resources/hooks/layout/use-layout'
+import {
+  useCreateTemplate,
+  useTemplate,
+  useUpdateTemplate,
+} from '@/resources/hooks/template/use-template'
+import { uploadAssets } from '@/resources/queries/vaulta'
+import Editor from '@monaco-editor/react'
 import { Button } from '@shadcn/ui/button'
-import { Input } from '@shadcn/ui/input'
-import { Label } from '@shadcn/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shadcn/ui/select'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
 } from '@shadcn/ui/dialog'
-import { LayoutFormFields } from '@/components/layouts/form/fields'
-import { uploadAssets } from '@/resources/queries/vaulta'
-import { Info, Plus, Trash2 } from 'lucide-react'
+import { Input } from '@shadcn/ui/input'
+import { Label } from '@shadcn/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shadcn/ui/select'
+import { Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { EmptyContent } from 'tessera-ui'
+import { toast } from 'tessera-ui/components'
 
 const NO_LAYOUT = '__none__'
 const SIX_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 6
@@ -122,7 +120,6 @@ export function TemplateFormContent({
 
   const createMutation = useCreateTemplate(config)
   const updateMutation = useUpdateTemplate(config, templateId || '')
-  const deleteMutation = useDeleteTemplate(config)
   const createLayoutMutation = useCreateLayout(config)
 
   const handleCreateLayout = async () => {
@@ -211,18 +208,6 @@ export function TemplateFormContent({
     }
   }
 
-  const handleDelete = async () => {
-    if (!templateId) return
-
-    try {
-      await deleteMutation.mutateAsync(templateId)
-      toast.success('Template deleted successfully')
-      navigate('/templates')
-    } catch (error) {
-      handleApiError(error)
-    }
-  }
-
   if (isEditing && isLoadingDetail) {
     return <AppPreloader className="min-h-screen" />
   }
@@ -238,53 +223,20 @@ export function TemplateFormContent({
   }
 
   return (
-    <DetailContent
-      title={isEditing ? 'Edit Template' : 'New Template'}
-      actions={
-        isEditing ? (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
-                <Trash2 size={14} />
-                Delete
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Delete Template</DialogTitle>
-              </DialogHeader>
-              <p className="text-sm text-muted-foreground">
-                Are you sure you want to delete <strong>{alias}</strong>? This action cannot be
-                undone.
-              </p>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}>
-                  {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : undefined
-      }>
+    <DetailContent title={isEditing ? 'Edit Template' : 'New Template'}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           {/* Left sidebar — metadata */}
           <div className="grid grid-cols-4 gap-5">
             <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <Label htmlFor="name" className="mb-0">
                   Name
                 </Label>
                 <button
                   type="button"
-                  className="text-xs text-muted-foreground hover:text-foreground cursor-pointer
-                    truncate max-w-[300px]"
+                  className="text-xs leading-none text-muted-foreground hover:text-foreground
+                    cursor-pointer truncate max-w-[300px]"
                   onClick={() => {
                     setDraftAlias(alias)
                     setAliasDialogOpen(true)
@@ -492,7 +444,7 @@ export function TemplateFormContent({
             </Button>
           </Link>
           <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Create Template'}
+            {isSubmitting ? 'Saving…' : 'Save'}
           </Button>
         </div>
       </div>

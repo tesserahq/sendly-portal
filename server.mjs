@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { createRequestHandler } from '@react-router/express'
 import crypto from 'crypto'
 import express from 'express'
