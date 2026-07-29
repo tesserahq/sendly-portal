@@ -444,19 +444,10 @@ export function TemplateFormContent({
                 </Dialog>
               </div>
             </div>
-            {/* <div
-              className="hidden items-center gap-2 rounded border border-amber-300 bg-amber-50 px-3
-                py-2 text-xs text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 mb-2">
-              <Info size={13} className="shrink-0" />
-              <span>
-                Images are embedded directly in the HTML for now (no image storage yet) — this can
-                make templates large. Proper image hosting is coming soon.
-              </span>
-            </div> */}
 
             <div className="flex items-center border-b">
               <TabButton active={tab === 'edit'} onClick={() => handleTabChange('edit')}>
-                Edit
+                Design
               </TabButton>
               <TabButton active={tab === 'html'} onClick={() => handleTabChange('html')}>
                 HTML
