@@ -19,6 +19,8 @@ import {
 } from '@/components/email-editor/rich-email-editor'
 import Editor from '@monaco-editor/react'
 import { TabButton } from '@/components/email-activity/detail/email-viewer/tab-button'
+import { useHtmlValidation } from '@/components/html-editor/use-html-validation'
+import { getHtmlErrors } from '@/components/html-editor/html-validator'
 import { Button } from '@shadcn/ui/button'
 import { Input } from '@shadcn/ui/input'
 import { Label } from '@shadcn/ui/label'
@@ -77,6 +79,7 @@ export function TemplateFormContent({
   const [editorReady, setEditorReady] = useState(false)
   const [tab, setTab] = useState<'edit' | 'html'>('edit')
   const [htmlValue, setHtmlValue] = useState('')
+  const { handleMount: handleHtmlEditorMount } = useHtmlValidation(htmlValue)
 
   const {
     data,
@@ -167,6 +170,16 @@ export function TemplateFormContent({
 
   const handleSubmit = async () => {
     const html = tab === 'html' ? htmlValue : ((await richEditorRef.current?.getHTML()) ?? '')
+
+    const htmlErrors = getHtmlErrors(html)
+    if (htmlErrors.length > 0) {
+      toast.error(
+        `Fix ${htmlErrors.length} HTML error${htmlErrors.length > 1 ? 's' : ''} before saving`
+      )
+      setHtmlValue(html)
+      setTab('html')
+      return
+    }
 
     const payload = {
       alias,
@@ -464,6 +477,7 @@ export function TemplateFormContent({
                   language="html"
                   value={htmlValue}
                   onChange={(v) => setHtmlValue(v ?? '')}
+                  onMount={handleHtmlEditorMount}
                   theme="vs-dark"
                   options={{
                     minimap: { enabled: false },
