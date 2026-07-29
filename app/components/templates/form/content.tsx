@@ -5,7 +5,6 @@ import {
   useTemplate,
   useCreateTemplate,
   useUpdateTemplate,
-  useDeleteTemplate,
 } from '@/resources/hooks/template/use-template'
 import { useLayouts, useCreateLayout } from '@/resources/hooks/layout/use-layout'
 import { AppPreloader } from '@/components/loader/pre-loader'
@@ -31,12 +30,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from '@shadcn/ui/dialog'
 import { LayoutFormFields } from '@/components/layouts/form/fields'
 import { uploadAssets } from '@/resources/queries/vaulta'
-import { Info, Plus, Trash2 } from 'lucide-react'
+import { Info, Plus } from 'lucide-react'
 
 const NO_LAYOUT = '__none__'
 const SIX_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 6
@@ -122,7 +120,6 @@ export function TemplateFormContent({
 
   const createMutation = useCreateTemplate(config)
   const updateMutation = useUpdateTemplate(config, templateId || '')
-  const deleteMutation = useDeleteTemplate(config)
   const createLayoutMutation = useCreateLayout(config)
 
   const handleCreateLayout = async () => {
@@ -211,18 +208,6 @@ export function TemplateFormContent({
     }
   }
 
-  const handleDelete = async () => {
-    if (!templateId) return
-
-    try {
-      await deleteMutation.mutateAsync(templateId)
-      toast.success('Template deleted successfully')
-      navigate('/templates')
-    } catch (error) {
-      handleApiError(error)
-    }
-  }
-
   if (isEditing && isLoadingDetail) {
     return <AppPreloader className="min-h-screen" />
   }
@@ -238,40 +223,7 @@ export function TemplateFormContent({
   }
 
   return (
-    <DetailContent
-      title={isEditing ? 'Edit Template' : 'New Template'}
-      actions={
-        isEditing ? (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
-                <Trash2 size={14} />
-                Delete
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Delete Template</DialogTitle>
-              </DialogHeader>
-              <p className="text-sm text-muted-foreground">
-                Are you sure you want to delete <strong>{alias}</strong>? This action cannot be
-                undone.
-              </p>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}>
-                  {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : undefined
-      }>
+    <DetailContent title={isEditing ? 'Edit Template' : 'New Template'}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           {/* Left sidebar — metadata */}
