@@ -11,6 +11,7 @@ export interface TemplateType {
     id: string
     alias: string
     name: string | null
+    html: string
   }
   created_at: string
   updated_at: string

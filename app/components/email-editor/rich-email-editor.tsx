@@ -38,6 +38,23 @@ function stripHtmlDocumentWrapper(html: string): string {
   return doc.body?.innerHTML ?? html
 }
 
+const BACKGROUND_STRIP_SELECTOR = 'table, td'
+
+// The editor theme bakes a `background-color` (or `background`) into these
+// elements' inline styles by default (e.g. the root container table renders
+// with `background-color:#ffffff`). Since Template.html gets substituted
+// into a Layout's ${content} slot, a hardcoded background here paints over
+// the layout's own background. Strip it so the layout controls it instead.
+function stripBackgroundColors(html: string): string {
+  if (typeof DOMParser === 'undefined') return html
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  doc.querySelectorAll<HTMLElement>(BACKGROUND_STRIP_SELECTOR).forEach((el) => {
+    el.style.removeProperty('background-color')
+    el.style.removeProperty('background')
+  })
+  return doc.body?.innerHTML ?? html
+}
+
 async function defaultUploadImageStub(file: File) {
   // Stub: no storage backend exists yet (see issue #50). We use a data: URL
   // instead of URL.createObjectURL because blob: URLs are origin-scoped —
@@ -108,7 +125,7 @@ export const RichEmailEditor = forwardRef<RichEmailEditorRef, RichEmailEditorPro
         getHTML: async () => {
           if (!editor) return ''
           const { html } = await composeReactEmail({ editor })
-          return stripRootContainerCentering(stripHtmlDocumentWrapper(html))
+          return stripBackgroundColors(stripRootContainerCentering(stripHtmlDocumentWrapper(html)))
         },
         setContent: (html: string) => {
           editor?.commands.setContent(html)
@@ -127,7 +144,7 @@ export const RichEmailEditor = forwardRef<RichEmailEditorRef, RichEmailEditorPro
 
           {editor && (
             <Inspector.Root
-              className="re-inspector w-72 shrink-0 overflow-y-auto border-l p-3 text-sm">
+              className="re-inspector w-96! shrink-0 overflow-y-auto border-l p-3 text-sm">
               <Inspector.Breadcrumb />
               <Inspector.Document />
               <Inspector.Node />

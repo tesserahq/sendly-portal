@@ -5,6 +5,7 @@ import { useTemplate, useDeleteTemplate } from '@/resources/hooks/template/use-t
 import { AppPreloader } from '@/components/loader/pre-loader'
 import { DetailContent } from '@/components/detail-content'
 import { EmailViewer } from '@/components/email-activity/detail/email-viewer/email-viewer'
+import { mergeTemplateIntoLayout } from '@/utils/helpers/layout.helper'
 import { EmptyContent, ResourceID } from 'tessera-ui'
 import { DateTime } from 'tessera-ui/components'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
@@ -58,6 +59,10 @@ export function TemplateOverviewContent({
       />
     )
   }
+
+  const previewHtml = data.layout?.html
+    ? mergeTemplateIntoLayout(data.layout.html, data.html)
+    : data.html
 
   return (
     <div className="animate-slide-up">
@@ -143,7 +148,12 @@ export function TemplateOverviewContent({
         </div>
 
         <div className="mt-10">
-          <EmailViewer html={data.html} raw={data.html} />
+          <iframe
+            srcDoc={previewHtml}
+            className="w-full h-[600px] border-0"
+            sandbox=""
+            title="Email Content"
+          />
         </div>
       </DetailContent>
 
