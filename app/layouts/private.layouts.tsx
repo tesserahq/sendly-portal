@@ -2,7 +2,7 @@
 import { useRequestInfo } from '@/hooks/useRequestInfo'
 import { ROUTE_PATH as THEME_PATH } from '@/routes/resources/update-theme'
 import { SITE_CONFIG } from '@/utils/config/site.config'
-import { Building2, FileText, History, LayoutTemplate } from 'lucide-react'
+import { Building2, FileText, History, LayoutTemplate, Send } from 'lucide-react'
 import { Outlet, useNavigate, useParams, useSubmit } from 'react-router'
 import { AuthGuard, Layout, MainItemProps } from 'tessera-ui'
 
@@ -12,7 +12,10 @@ export default function PrivateLayout() {
   const params = useParams()
   const navigate = useNavigate()
   const shouldCollapseSidebar =
-    Boolean(params.emailID) || Boolean(params.layoutID) || Boolean(params.templateID)
+    Boolean(params.emailID) ||
+    Boolean(params.layoutID) ||
+    Boolean(params.templateID) ||
+    Boolean(params.batchID)
 
   const onSetTheme = (theme: string) => {
     submit(
@@ -31,6 +34,11 @@ export default function PrivateLayout() {
       title: 'Activity',
       path: '/activity',
       icon: History,
+    },
+    {
+      title: 'Broadcasts',
+      path: '/broadcasts',
+      icon: Send as any,
     },
     {
       title: 'Templates',

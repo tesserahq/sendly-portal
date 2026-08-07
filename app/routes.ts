@@ -14,6 +14,11 @@ export default [
       index('routes/main/activity/detail/index.tsx'),
       route('overview', 'routes/main/activity/detail/overview.tsx'),
     ]),
+    route('broadcasts', 'routes/main/broadcasts/index.tsx'),
+    route('broadcasts/:batchID', 'routes/main/broadcasts/detail/layout.tsx', [
+      index('routes/main/broadcasts/detail/index.tsx'),
+      route('overview', 'routes/main/broadcasts/detail/overview.tsx'),
+    ]),
     route('providers', 'routes/main/providers/index.tsx'),
     route('layouts', 'routes/main/layouts/layout.tsx', [
       index('routes/main/layouts/index.tsx'),
