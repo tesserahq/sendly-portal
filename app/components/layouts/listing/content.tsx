@@ -59,26 +59,28 @@ export function LayoutsListingContent({
   const columns = useMemo<ColumnDef<LayoutType>[]>(
     () => [
       {
-        accessorKey: 'alias',
-        header: 'Alias',
-        size: 200,
+        accessorKey: 'name',
+        header: 'Name',
+        size: 250,
         cell: ({ row }) => (
           <Link to={`/layouts/${row.original.id}`} className="button-link">
-            <div className="max-w-[200px] truncate font-mono text-sm">
-              {row.original.alias || '-'}
-            </div>
+            <div className="max-w-[250px] truncate">{row.original.name || '-'}</div>
           </Link>
         ),
       },
       {
-        accessorKey: 'name',
-        header: 'Name',
-        size: 250,
-        cell: ({ row }) => <div className="max-w-[250px] truncate">{row.original.name || '-'}</div>,
+        accessorKey: 'alias',
+        header: 'Alias',
+        size: 200,
+        cell: ({ row }) => (
+          <div className="max-w-[200px] truncate font-mono text-sm">
+            {row.original.alias || '-'}
+          </div>
+        ),
       },
       {
         accessorKey: 'created_at',
-        header: 'Created',
+        header: 'Created At',
         size: 200,
         cell: ({ row }) => (
           <DateTime date={row.getValue('created_at') as string} formatStr="dd/MM/yyyy HH:mm:ss" />
