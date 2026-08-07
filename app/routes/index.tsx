@@ -32,7 +32,7 @@ export default function Index() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/providers" />
+    return <Navigate to="/activity" />
   }
 
   return (

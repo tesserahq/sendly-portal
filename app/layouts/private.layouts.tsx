@@ -28,14 +28,14 @@ export default function PrivateLayout() {
 
   const menuItems: MainItemProps[] = [
     {
-      title: 'Providers',
-      path: `/providers`,
-      icon: Building2 as any,
-    },
-    {
       title: 'Activity',
       path: '/activity',
       icon: History,
+    },
+    {
+      title: 'Templates',
+      path: '/templates',
+      icon: FileText as any,
     },
     {
       title: 'Layouts',
@@ -43,9 +43,9 @@ export default function PrivateLayout() {
       icon: LayoutTemplate as any,
     },
     {
-      title: 'Templates',
-      path: '/templates',
-      icon: FileText as any,
+      title: 'Providers',
+      path: `/providers`,
+      icon: Building2 as any,
     },
   ]
 
