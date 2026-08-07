@@ -59,22 +59,14 @@ export function TemplatesListingContent({
   const columns = useMemo<ColumnDef<TemplateType>[]>(
     () => [
       {
-        accessorKey: 'alias',
-        header: 'Alias',
-        size: 180,
-        cell: ({ row }) => (
-          <Link to={`/templates/${row.original.id}`} className="button-link">
-            <div className="max-w-[180px] truncate font-mono text-sm">
-              {row.original.alias || '-'}
-            </div>
-          </Link>
-        ),
-      },
-      {
         accessorKey: 'name',
         header: 'Name',
         size: 200,
-        cell: ({ row }) => <div className="max-w-[200px] truncate">{row.original.name || '-'}</div>,
+        cell: ({ row }) => (
+          <Link to={`/templates/${row.original.id}`} className="button-link">
+            <div className="max-w-[200px] truncate">{row.original.name || '-'}</div>
+          </Link>
+        ),
       },
       {
         accessorKey: 'subject',
@@ -82,6 +74,16 @@ export function TemplatesListingContent({
         size: 280,
         cell: ({ row }) => (
           <div className="max-w-[280px] truncate">{row.original.subject || '-'}</div>
+        ),
+      },
+      {
+        accessorKey: 'alias',
+        header: 'Alias',
+        size: 180,
+        cell: ({ row }) => (
+          <div className="max-w-[180px] truncate font-mono text-sm">
+            {row.original.alias || '-'}
+          </div>
         ),
       },
       {
