@@ -1,20 +1,18 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { BroadcastBatchType } from '@/resources/queries/broadcast'
-import { DateTime } from 'tessera-ui'
+import { DateTime, ResourceID } from 'tessera-ui'
 import { Link } from 'react-router'
 
 export const columns: ColumnDef<BroadcastBatchType>[] = [
   {
     accessorKey: 'batch_id',
-    header: 'Batch ID',
+    header: 'ID',
     size: 280,
     cell: ({ row }) => {
       const { batch_id } = row.original
       return (
         <Link to={`/broadcasts/${batch_id}`} className="button-link">
-          <div className="max-w-[280px] truncate font-mono text-xs" title={batch_id}>
-            {batch_id}
-          </div>
+          <ResourceID value={batch_id} />
         </Link>
       )
     },
@@ -46,7 +44,7 @@ export const columns: ColumnDef<BroadcastBatchType>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'Date & Time',
+    header: 'Created At',
     size: 200,
     cell: ({ row }) => {
       const date = row.getValue('created_at') as string
