@@ -1,7 +1,12 @@
 import { fetchApi } from '@/libraries/fetch'
 import { IPaging } from '@/resources/types'
 import { IQueryConfig, IQueryParams } from '..'
-import { TemplateType, CreateTemplatePayload, UpdateTemplatePayload } from './template.type'
+import {
+  TemplateType,
+  CreateTemplatePayload,
+  UpdateTemplatePayload,
+  CloneTemplatePayload,
+} from './template.type'
 
 const TEMPLATES_ENDPOINT = '/templates'
 
@@ -65,4 +70,19 @@ export async function deleteTemplate(config: IQueryConfig, id: string): Promise<
   await fetchApi(`${apiUrl}${TEMPLATES_ENDPOINT}/${id}`, token, nodeEnv, {
     method: 'DELETE',
   })
+}
+
+export async function cloneTemplate(
+  config: IQueryConfig,
+  id: string,
+  data: CloneTemplatePayload
+): Promise<TemplateType> {
+  const { apiUrl, token, nodeEnv } = config
+
+  const response = await fetchApi(`${apiUrl}${TEMPLATES_ENDPOINT}/${id}/clone`, token, nodeEnv, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+
+  return response as TemplateType
 }

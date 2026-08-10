@@ -1,14 +1,23 @@
 import { DataTable } from '@/components/data-table'
+import {
+  CloneTemplateDialog,
+  type CloneTemplateDialogHandle,
+} from '@/components/templates/clone-template-dialog'
 import { NodeENVType } from '@/libraries/fetch'
-import { useDeleteTemplate, useTemplates } from '@/resources/hooks/template/use-template'
+import {
+  useCloneTemplate,
+  useDeleteTemplate,
+  useTemplates,
+} from '@/resources/hooks/template/use-template'
 import { TemplateType } from '@/resources/queries/template'
+import { generateRandomString } from '@/utils/helpers/slug.helper'
 import { Button } from '@shadcn/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
 import { ColumnDef } from '@tanstack/react-table'
-import { Edit, EyeIcon, MoreVertical, Plus, Trash2 } from 'lucide-react'
+import { CopyCheck, Edit, EyeIcon, MoreVertical, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { EmptyContent } from 'tessera-ui'
+import { EmptyContent, toast } from 'tessera-ui'
 import { DateTime } from 'tessera-ui/components'
 import DeleteConfirmation, {
   type DeleteConfirmationHandle,
@@ -34,6 +43,7 @@ export function TemplatesListingContent({
 }: TemplatesListingContentProps) {
   const navigate = useNavigate()
   const deleteConfirmationRef = useRef<DeleteConfirmationHandle>(null)
+  const cloneTemplateDialogRef = useRef<CloneTemplateDialogHandle>(null)
   const config = { apiUrl, token, nodeEnv }
 
   const { data, isLoading, error } = useTemplates(
@@ -42,16 +52,59 @@ export function TemplatesListingContent({
     { enabled: !!token && !authLoading }
   )
 
-  const { mutateAsync: deleteTemplate } = useDeleteTemplate(config)
+  const { mutateAsync: deleteTemplate } = useDeleteTemplate(config, {
+    onSuccess: () => {
+      toast.success('Template deleted successfully')
+    },
+    onError: (error) => {
+      toast.error('Failed to delete template', {
+        description: error?.message || 'Please try again.',
+      })
+    },
+  })
+
+  const cloneTemplateMutation = useCloneTemplate(config)
 
   const handleDelete = (template: TemplateType) => {
     deleteConfirmationRef.current?.open({
       title: 'Delete Template',
-      description: `Are you sure you want to delete "${template.alias}"? This action cannot be undone.`,
+      description: `Are you sure you want to delete "${template.name}"? This action cannot be undone.`,
       onDelete: async () => {
         deleteConfirmationRef.current?.updateConfig({ isLoading: true })
         await deleteTemplate(template.id)
         deleteConfirmationRef.current?.close()
+      },
+    })
+  }
+
+  const handleClone = (template: TemplateType) => {
+    const randomSuffix = generateRandomString(5)
+    const clonedName = `Copy of ${template.name}-${randomSuffix}`
+    const clonedAlias = `copy-of-${template.alias}-${randomSuffix}`
+
+    cloneTemplateDialogRef.current?.open({
+      title: 'Clone Template',
+      description: `Clone "${template.name}"? A copy named "${clonedName}" will be created.`,
+      onClone: async () => {
+        cloneTemplateDialogRef.current?.updateConfig({ isLoading: true })
+        try {
+          const cloned = await cloneTemplateMutation.mutateAsync({
+            id: template.id,
+            data: {
+              name: clonedName,
+              alias: clonedAlias,
+              tags: [],
+            },
+          })
+          cloneTemplateDialogRef.current?.close()
+          toast.success('Template cloned successfully')
+          navigate(`/templates/${cloned.id}`)
+        } catch (error: unknown) {
+          cloneTemplateDialogRef.current?.updateConfig({ isLoading: false })
+          toast.error('Failed to clone template', {
+            description: (error as Error)?.message || 'Please try again.',
+          })
+        }
       },
     })
   }
@@ -81,9 +134,7 @@ export function TemplatesListingContent({
         header: 'Alias',
         size: 180,
         cell: ({ row }) => (
-          <div className="max-w-[180px] truncate font-mono text-sm">
-            {row.original.alias || '-'}
-          </div>
+          <div className="max-w-[90%] truncate font-mono text-sm">{row.original.alias || '-'}</div>
         ),
       },
       {
@@ -93,10 +144,19 @@ export function TemplatesListingContent({
         cell: ({ row }) => {
           const { layout, layout_id } = row.original
           const display = layout?.alias || layout_id
+          if (!layout_id) {
+            return (
+              <div className="max-w-[160px] truncate font-mono text-sm text-muted-foreground">
+                -
+              </div>
+            )
+          }
           return (
-            <div className="max-w-[160px] truncate font-mono text-sm text-muted-foreground">
-              {display || '-'}
-            </div>
+            <Link
+              to={`/layouts/${layout_id}`}
+              className="button-link block max-w-[160px] truncate font-mono text-sm">
+              {display}
+            </Link>
           )
         },
       },
@@ -139,6 +199,13 @@ export function TemplatesListingContent({
                   onClick={() => navigate(`/templates/${template.id}/edit`)}>
                   <Edit size={16} />
                   <span>Edit</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="flex w-full justify-start gap-2"
+                  onClick={() => handleClone(template)}>
+                  <CopyCheck size={16} />
+                  <span>Clone</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -188,6 +255,7 @@ export function TemplatesListingContent({
       </div>
 
       <DeleteConfirmation ref={deleteConfirmationRef} />
+      <CloneTemplateDialog ref={cloneTemplateDialogRef} />
     </div>
   )
 }
