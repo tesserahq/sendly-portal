@@ -7,6 +7,9 @@ import {
   deleteTemplate,
   CreateTemplatePayload,
   UpdateTemplatePayload,
+  TemplateType,
+  CloneTemplatePayload,
+  cloneTemplate,
 } from '@/resources/queries/template'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -98,13 +101,58 @@ export function useUpdateTemplate(config: IQueryConfig, id: string) {
   })
 }
 
-export function useDeleteTemplate(config: IQueryConfig) {
+export function useDeleteTemplate(
+  config: IQueryConfig,
+  options?: {
+    onSuccess?: () => void
+    onError?: (error: QueryError) => void
+  }
+) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => deleteTemplate(config, id),
+    mutationFn: async (id: string) => {
+      return await deleteTemplate(config, id)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueryKeys.lists() })
+      options?.onSuccess?.()
+    },
+    onError: (error: QueryError) => {
+      options?.onError?.(error)
+    },
+  })
+}
+
+/**
+ * Hook for cloning a template (Sendly API)
+ */
+export function useCloneTemplate(
+  config: IQueryConfig,
+  options?: {
+    onSuccess?: (data: TemplateType) => void
+    onError?: (error: QueryError) => void
+  }
+) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: CloneTemplatePayload
+    }): Promise<TemplateType> => {
+      if (!config.token) {
+        throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+      }
+      return await cloneTemplate(config, id, data)
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: templateQueryKeys.lists() })
+
+      options?.onSuccess?.(data)
     },
   })
 }

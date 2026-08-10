@@ -118,8 +118,8 @@ export function TemplateFormContent({
   const [newLayoutAlias, setNewLayoutAlias] = useState('')
   const [newLayoutHtml, setNewLayoutHtml] = useState('')
 
-  const createMutation = useCreateTemplate(config)
-  const updateMutation = useUpdateTemplate(config, templateId || '')
+  const createTemplateMutation = useCreateTemplate(config)
+  const updateTemplateMutation = useUpdateTemplate(config, templateId || '')
   const createLayoutMutation = useCreateLayout(config)
 
   const handleCreateLayout = async () => {
@@ -163,7 +163,7 @@ export function TemplateFormContent({
     }
   }
 
-  const isSubmitting = createMutation.isPending || updateMutation.isPending
+  const isSubmitting = createTemplateMutation.isPending || updateTemplateMutation.isPending
 
   const handleSubmit = async () => {
     const html = tab === 'html' ? htmlValue : ((await richEditorRef.current?.getHTML()) ?? '')
@@ -190,16 +190,19 @@ export function TemplateFormContent({
 
     try {
       if (isEditing) {
-        const updated = await updateMutation.mutateAsync({
+        // Update existing template
+        const updated = await updateTemplateMutation.mutateAsync({
           ...payload,
           from_email: fromEmail || null,
           reply_to: replyTo || null,
           layout_id: layoutId !== NO_LAYOUT ? layoutId : null,
         })
+
         toast.success('Template updated successfully')
         navigate(`/templates/${updated.id}`)
       } else {
-        const created = await createMutation.mutateAsync(payload)
+        // Create new template
+        const created = await createTemplateMutation.mutateAsync(payload)
         toast.success('Template created successfully')
         navigate(`/templates/${created.id}`)
       }
