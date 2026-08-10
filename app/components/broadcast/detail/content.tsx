@@ -4,7 +4,7 @@ import { Badge } from '@/modules/shadcn/ui/badge'
 import { useBroadcastDetail } from '@/resources/hooks/broadcast/use-broadcast'
 import { IQueryConfig } from '@/resources/queries'
 import { getStatusBadgeProps } from '@/utils/helpers/badge.helper'
-import { EmptyContent } from 'tessera-ui'
+import { EmptyContent, ResourceID } from 'tessera-ui'
 
 interface BroadcastDetailContentProps {
   config: IQueryConfig
@@ -32,8 +32,10 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
     <DetailContent title="Broadcast Overview" className="grid grid-cols-9 gap-y-4 h-fit">
       <div className="d-list col-span-7 col-start-2 row-start-1">
         <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Batch ID:</dt>
-          <dd className="d-content font-mono text-xs">{data.batch_id}</dd>
+          <dt className="d-label text-end pr-5">ID:</dt>
+          <dd className="d-content font-mono text-xs">
+            <ResourceID value={data.batch_id} />
+          </dd>
         </div>
         <div className="d-item border-none">
           <dt className="d-label text-end pr-5">Recipients:</dt>
