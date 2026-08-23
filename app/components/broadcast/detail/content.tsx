@@ -3,7 +3,7 @@ import { AppPreloader } from '@/components/loader/pre-loader'
 import { Badge } from '@/modules/shadcn/ui/badge'
 import { useBroadcastDetail } from '@/resources/hooks/broadcast/use-broadcast'
 import { IQueryConfig } from '@/resources/queries'
-import { getStatusBadgeProps } from '@/utils/helpers/badge.helper'
+import { getEmailEventTypeBadge, getStatusBadgeProps } from '@/utils/helpers/badge.helper'
 import { EmptyContent, ResourceID } from 'tessera-ui'
 
 interface BroadcastDetailContentProps {
@@ -59,6 +59,24 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
                 {data.finished ? 'Finished' : 'In progress'}
               </span>
             </Badge>
+          </dd>
+        </div>
+        <div className="d-item border-none">
+          <dt className="d-label text-end pr-5">Delivered:</dt>
+          <dd className="d-content">
+            <Badge {...getEmailEventTypeBadge('delivered')}>{data.delivered_count}</Badge>
+          </dd>
+        </div>
+        <div className="d-item border-none">
+          <dt className="d-label text-end pr-5">Bounced:</dt>
+          <dd className="d-content">
+            <Badge {...getEmailEventTypeBadge('bounced')}>{data.bounced_count}</Badge>
+          </dd>
+        </div>
+        <div className="d-item border-none">
+          <dt className="d-label text-end pr-5">Complained:</dt>
+          <dd className="d-content">
+            <Badge {...getEmailEventTypeBadge('complained')}>{data.complained_count}</Badge>
           </dd>
         </div>
       </div>

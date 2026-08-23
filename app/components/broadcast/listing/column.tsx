@@ -2,6 +2,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import { BroadcastBatchType } from '@/resources/queries/broadcast'
 import { DateTime, ResourceID } from 'tessera-ui'
 import { Link } from 'react-router'
+import { Badge } from '@/modules/shadcn/ui/badge'
+import { getEmailEventTypeBadge } from '@/utils/helpers/badge.helper'
 
 export const columns: ColumnDef<BroadcastBatchType>[] = [
   {
@@ -41,6 +43,30 @@ export const columns: ColumnDef<BroadcastBatchType>[] = [
     header: 'Suppressed',
     size: 120,
     cell: ({ row }) => <div>{row.original.suppressed_count}</div>,
+  },
+  {
+    accessorKey: 'delivered_count',
+    header: 'Delivered',
+    size: 120,
+    cell: ({ row }) => (
+      <Badge {...getEmailEventTypeBadge('delivered')}>{row.original.delivered_count}</Badge>
+    ),
+  },
+  {
+    accessorKey: 'bounced_count',
+    header: 'Bounced',
+    size: 120,
+    cell: ({ row }) => (
+      <Badge {...getEmailEventTypeBadge('bounced')}>{row.original.bounced_count}</Badge>
+    ),
+  },
+  {
+    accessorKey: 'complained_count',
+    header: 'Complained',
+    size: 120,
+    cell: ({ row }) => (
+      <Badge {...getEmailEventTypeBadge('complained')}>{row.original.complained_count}</Badge>
+    ),
   },
   {
     accessorKey: 'created_at',
