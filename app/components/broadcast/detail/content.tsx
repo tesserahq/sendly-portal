@@ -68,6 +68,12 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
           </dd>
         </div>
         <div className="d-item border-none">
+          <dt className="d-label text-end pr-5">Opened:</dt>
+          <dd className="d-content">
+            <Badge {...getEmailEventTypeBadge('opened')}>{data.opened_count}</Badge>
+          </dd>
+        </div>
+        <div className="d-item border-none">
           <dt className="d-label text-end pr-5">Bounced:</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('bounced')}>{data.bounced_count}</Badge>

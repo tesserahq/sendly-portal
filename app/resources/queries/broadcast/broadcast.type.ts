@@ -12,6 +12,7 @@ export interface BroadcastBatchType {
   delivered_count: number
   bounced_count: number
   complained_count: number
+  opened_count: number
   created_at: string
 }
 
@@ -24,4 +25,5 @@ export interface BroadcastStatusType {
   delivered_count: number
   bounced_count: number
   complained_count: number
+  opened_count: number
 }

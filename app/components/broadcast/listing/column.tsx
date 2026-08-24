@@ -53,6 +53,14 @@ export const columns: ColumnDef<BroadcastBatchType>[] = [
     ),
   },
   {
+    accessorKey: 'opened_count',
+    header: 'Opened',
+    size: 120,
+    cell: ({ row }) => (
+      <Badge {...getEmailEventTypeBadge('opened')}>{row.original.opened_count}</Badge>
+    ),
+  },
+  {
     accessorKey: 'bounced_count',
     header: 'Bounced',
     size: 120,
