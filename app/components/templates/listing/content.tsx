@@ -190,7 +190,7 @@ export function TemplatesListingContent({
                   <MoreVertical size={18} />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align="end" side="bottom" className="w-52 p-2">
+              <PopoverContent align="end" side="bottom" className="w-40 p-2">
                 <Button
                   variant="ghost"
                   className="flex w-full justify-start gap-2"
@@ -217,7 +217,7 @@ export function TemplatesListingContent({
                   className="flex w-full justify-start gap-2"
                   onClick={() => sendEmailDialogRef.current?.open(template)}>
                   <Send size={16} />
-                  <span>Send Test Email</span>
+                  <span>Send Email</span>
                 </Button>
                 <Button
                   variant="ghost"

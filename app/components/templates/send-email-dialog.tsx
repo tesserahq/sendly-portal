@@ -54,7 +54,7 @@ export const SendEmailDialog = forwardRef<SendEmailDialogHandle, SendEmailDialog
         setOpen(false)
       },
       onError: (error) => {
-        toast.error('Failed to send test email', {
+        toast.error('Failed to send email', {
           description: error?.message || 'Please try again.',
         })
       },
@@ -109,10 +109,10 @@ export const SendEmailDialog = forwardRef<SendEmailDialogHandle, SendEmailDialog
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-5xl w-full!">
           <DialogHeader>
-            <DialogTitle>Send Test Email</DialogTitle>
+            <DialogTitle>Send Email</DialogTitle>
             <DialogDescription>
-              This sends a test email using the &ldquo;{templateName}&rdquo; template. Edit the
-              fields below before sending.
+              This send an email using the &ldquo;{templateName}&rdquo; template. Edit the fields
+              below before sending.
             </DialogDescription>
           </DialogHeader>
 
