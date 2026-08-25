@@ -4,6 +4,10 @@ import {
   CloneTemplateDialog,
   type CloneTemplateDialogHandle,
 } from '@/components/templates/clone-template-dialog'
+import {
+  SendEmailDialog,
+  type SendEmailDialogHandle,
+} from '@/components/templates/send-email-dialog'
 import { NodeENVType } from '@/libraries/fetch'
 import {
   useCloneTemplate,
@@ -14,7 +18,7 @@ import { mergeTemplateIntoLayout } from '@/utils/helpers/layout.helper'
 import { generateRandomString } from '@/utils/helpers/slug.helper'
 import { Button } from '@shadcn/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
-import { CopyCheck, Edit, MoreHorizontal, Trash2 } from 'lucide-react'
+import { CopyCheck, Edit, MoreHorizontal, Send, Trash2 } from 'lucide-react'
 import { useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { EmptyContent, ResourceID, toast } from 'tessera-ui'
@@ -39,6 +43,7 @@ export function TemplateOverviewContent({
   const navigate = useNavigate()
   const deleteConfirmationRef = useRef<DeleteConfirmationHandle>(null)
   const cloneTemplateDialogRef = useRef<CloneTemplateDialogHandle>(null)
+  const sendEmailDialogRef = useRef<SendEmailDialogHandle>(null)
   const config = { apiUrl, token, nodeEnv }
 
   const { data, isLoading, error } = useTemplate(config, templateId, { enabled: !!token })
@@ -144,6 +149,13 @@ export function TemplateOverviewContent({
               </Button>
               <Button
                 variant="ghost"
+                className="flex w-full justify-start gap-2"
+                onClick={() => sendEmailDialogRef.current?.open(data)}>
+                <Send size={16} />
+                <span>Send Email</span>
+              </Button>
+              <Button
+                variant="ghost"
                 className="hover:bg-destructive hover:text-destructive-foreground flex w-full
                   justify-start gap-2"
                 onClick={handleDelete}>
@@ -218,6 +230,7 @@ export function TemplateOverviewContent({
 
       <DeleteConfirmation ref={deleteConfirmationRef} />
       <CloneTemplateDialog ref={cloneTemplateDialogRef} />
+      <SendEmailDialog ref={sendEmailDialogRef} config={config} />
     </div>
   )
 }
