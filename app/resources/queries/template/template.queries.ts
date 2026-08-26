@@ -15,12 +15,21 @@ export async function getTemplates(
   params: IQueryParams
 ): Promise<IPaging<TemplateType>> {
   const { apiUrl, token, nodeEnv } = config
-  const { page, size } = params
+  const { page, size, tag } = params
 
-  const response = await fetchApi(`${apiUrl}${TEMPLATES_ENDPOINT}`, token, nodeEnv, {
-    method: 'GET',
-    pagination: { page, size },
-  })
+  const tagSearch = new URLSearchParams()
+  tag?.forEach((t) => tagSearch.append('tag', t))
+  const query = tagSearch.toString()
+
+  const response = await fetchApi(
+    `${apiUrl}${TEMPLATES_ENDPOINT}${query ? `?${query}` : ''}`,
+    token,
+    nodeEnv,
+    {
+      method: 'GET',
+      pagination: { page, size },
+    }
+  )
 
   return response as IPaging<TemplateType>
 }
@@ -85,4 +94,12 @@ export async function cloneTemplate(
   })
 
   return response as TemplateType
+}
+
+export async function getTagTemplate(config: IQueryConfig): Promise<string[]> {
+  const { apiUrl, token, nodeEnv } = config
+
+  const response = await fetchApi(`${apiUrl}${TEMPLATES_ENDPOINT}/tags`, token, nodeEnv)
+
+  return response as string[]
 }

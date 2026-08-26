@@ -10,6 +10,7 @@ import { LayoutFormFields } from '@/components/layouts/form/fields'
 import { AppPreloader } from '@/components/loader/pre-loader'
 import { useHandleApiError } from '@/hooks/useHandleApiError'
 import { NodeENVType } from '@/libraries/fetch'
+import { Badge } from '@/modules/shadcn/ui/badge'
 import { useCreateLayout, useLayouts } from '@/resources/hooks/layout/use-layout'
 import {
   useCreateTemplate,
@@ -30,7 +31,7 @@ import {
 import { Input } from '@shadcn/ui/input'
 import { Label } from '@shadcn/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shadcn/ui/select'
-import { Plus } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { EmptyContent } from 'tessera-ui'
@@ -78,6 +79,8 @@ export function TemplateFormContent({
   const [tab, setTab] = useState<'edit' | 'html'>('edit')
   const [htmlValue, setHtmlValue] = useState('')
   const { handleMount: handleHtmlEditorMount } = useHtmlValidation(htmlValue)
+  const [tag, setTag] = useState<string>('')
+  const [tags, setTags] = useState<string[]>([])
 
   const {
     data,
@@ -99,6 +102,7 @@ export function TemplateFormContent({
       setFromEmail(data.from_email || '')
       setReplyTo(data.reply_to || '')
       setLayoutId(data.layout_id || NO_LAYOUT)
+      setTags(data.tags || [])
     }
   }, [data])
 
@@ -183,6 +187,7 @@ export function TemplateFormContent({
       name,
       subject,
       html,
+      tags,
       from_email: fromEmail || undefined,
       reply_to: replyTo || undefined,
       layout_id: layoutId !== NO_LAYOUT ? layoutId : undefined,
@@ -209,6 +214,20 @@ export function TemplateFormContent({
     } catch (error) {
       handleApiError(error)
     }
+  }
+
+  const sanitizeTagInput = (value: string) => value.replace(/[^a-zA-Z0-9._-]/g, '')
+
+  const handleAddTags = () => {
+    if (!tag) return
+    if (tags.includes(tag)) return
+
+    setTags((prev) => [...prev, tag])
+    setTag('')
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((val) => val !== tagToRemove))
   }
 
   if (isEditing && isLoadingDetail) {
@@ -250,13 +269,14 @@ export function TemplateFormContent({
               <Input
                 id="name"
                 value={name}
+                autoFocus
                 onChange={(e) => {
                   setName(e.target.value)
                   const slug = slugify(e.target.value)
                   setAlias(slug)
                   setDraftAlias(slug)
                 }}
-                placeholder="e.g. Welcome Email"
+                placeholder="Welcome Email"
                 required
               />
             </div>
@@ -272,7 +292,7 @@ export function TemplateFormContent({
                     id="alias"
                     value={draftAlias}
                     onChange={(e) => setDraftAlias(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
-                    placeholder="e.g. welcome-email"
+                    placeholder="welcome-email"
                     autoFocus
                   />
                 </div>
@@ -297,7 +317,7 @@ export function TemplateFormContent({
                 id="subject"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                placeholder="e.g. Welcome to ${app_name}!"
+                placeholder="Welcome to ${app_name}!"
                 required
               />
             </div>
@@ -325,80 +345,117 @@ export function TemplateFormContent({
             </div>
           </div>
 
+          <div className="flex items-start gap-5 justify-between">
+            <div className="w-1/2">
+              <Label className="text-sm font-medium">Tags</Label>
+              <div className="flex items-center gap-2 mb-2">
+                <Input
+                  value={tag}
+                  onChange={(e) => setTag(sanitizeTagInput(e.target.value))}
+                  placeholder='Press "Enter" to add'
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddTags()
+                    }
+                  }}
+                />
+                <Button type="button" variant="outline" onClick={handleAddTags} disabled={!tag}>
+                  Add
+                </Button>
+              </div>
+              {tags.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {tags.map((tagValue) => {
+                    return (
+                      <Badge
+                        key={tagValue}
+                        variant="outline"
+                        className="flex items-center gap-1 text-sm">
+                        {tagValue}
+                        <div
+                          className="cursor-pointer hover:text-destructive"
+                          onClick={() => handleRemoveTag(tagValue)}>
+                          <X size={15} />
+                        </div>
+                      </Badge>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div className="w-1/2">
+              <Label htmlFor="layout" className="text-sm font-medium">
+                Layout:
+              </Label>
+              <Select
+                key={`${layoutsData ? 'ready' : 'loading'}-${layoutsData?.items.length ?? 0}`}
+                value={layoutId}
+                disabled={isLoadingLayouts}
+                onValueChange={(value) => {
+                  if (value === 'new_layout') {
+                    setNewLayoutOpen(true)
+                  } else if (value) {
+                    setLayoutId(value)
+                  }
+                }}>
+                <SelectTrigger id="layout">
+                  <SelectValue placeholder="No layout" />
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value={NO_LAYOUT}>No layout</SelectItem>
+                  {layoutsData?.items.map((layout) => (
+                    <SelectItem key={layout.id} value={layout.id}>
+                      {layout.name}
+                    </SelectItem>
+                  ))}
+                  <SelectItem
+                    value="new_layout"
+                    className="border-t rounded-none hover:bg-transparent! hover:opacity-80
+                      hover:cursor-pointer py-2">
+                    <div className="flex items-center gap-2 w-full">
+                      <Plus size={14} className="text-muted-foreground" />
+                      <span>New layout</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Dialog form new layouts */}
+              <Dialog open={newLayoutOpen} onOpenChange={setNewLayoutOpen}>
+                <DialogContent className="min-w-5xl">
+                  <DialogHeader>
+                    <DialogTitle>New Layout</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4 w-full">
+                    <LayoutFormFields
+                      name={newLayoutName}
+                      onNameChange={setNewLayoutName}
+                      alias={newLayoutAlias}
+                      onAliasChange={setNewLayoutAlias}
+                      html={newLayoutHtml}
+                      onHtmlChange={setNewLayoutHtml}
+                      htmlHeight="400px"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      disabled={!newLayoutAlias || !newLayoutHtml || createLayoutMutation.isPending}
+                      onClick={handleCreateLayout}>
+                      {createLayoutMutation.isPending ? 'Creating…' : 'Create Layout'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
           {/* Right — HTML editor */}
           <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <Label className="mb-0">Content</Label>
-              <div className="flex items-center gap-3">
-                <Label htmlFor="layout" className="text-sm mb-0">
-                  Layout:
-                </Label>
-                <Select
-                  key={`${layoutsData ? 'ready' : 'loading'}-${layoutsData?.items.length ?? 0}`}
-                  value={layoutId}
-                  disabled={isLoadingLayouts}
-                  onValueChange={(value) => {
-                    if (value === 'new_layout') {
-                      setNewLayoutOpen(true)
-                    } else if (value) {
-                      setLayoutId(value)
-                    }
-                  }}>
-                  <SelectTrigger id="layout">
-                    <SelectValue placeholder="No layout" />
-                  </SelectTrigger>
-                  <SelectContent align="end">
-                    <SelectItem value={NO_LAYOUT}>No layout</SelectItem>
-                    {layoutsData?.items.map((layout) => (
-                      <SelectItem key={layout.id} value={layout.id}>
-                        {layout.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem
-                      value="new_layout"
-                      className="border-t rounded-none hover:bg-transparent! hover:opacity-80
-                        hover:cursor-pointer py-2">
-                      <div className="flex items-center gap-2 w-full">
-                        <Plus size={14} className="text-muted-foreground" />
-                        <span>New layout</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Dialog form new layouts */}
-                <Dialog open={newLayoutOpen} onOpenChange={setNewLayoutOpen}>
-                  <DialogContent className="min-w-5xl">
-                    <DialogHeader>
-                      <DialogTitle>New Layout</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-4 w-full">
-                      <LayoutFormFields
-                        name={newLayoutName}
-                        onNameChange={setNewLayoutName}
-                        alias={newLayoutAlias}
-                        onAliasChange={setNewLayoutAlias}
-                        html={newLayoutHtml}
-                        onHtmlChange={setNewLayoutHtml}
-                        htmlHeight="400px"
-                      />
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button
-                        disabled={
-                          !newLayoutAlias || !newLayoutHtml || createLayoutMutation.isPending
-                        }
-                        onClick={handleCreateLayout}>
-                        {createLayoutMutation.isPending ? 'Creating…' : 'Create Layout'}
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
+            <Label className="text-sm font-medium">Content</Label>
 
             <div className="flex items-center border-b">
               <TabButton active={tab === 'edit'} onClick={() => handleTabChange('edit')}>

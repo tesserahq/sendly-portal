@@ -29,30 +29,30 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
   }
 
   return (
-    <DetailContent title="Broadcast Overview" className="grid grid-cols-9 gap-y-4 h-fit">
+    <DetailContent title="Broadcast Overview">
       <div className="d-list col-span-7 col-start-2 row-start-1">
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">ID:</dt>
+        <div className="d-item">
+          <dt className="d-label">ID</dt>
           <dd className="d-content font-mono text-xs">
             <ResourceID value={data.batch_id} />
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Recipients:</dt>
+        <div className="d-item">
+          <dt className="d-label">Recipients</dt>
           <dd className="d-content">{data.queued_count}</dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Suppressed:</dt>
+        <div className="d-item">
+          <dt className="d-label">Suppressed</dt>
           <dd className="d-content">{data.suppressed_count}</dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Prepared:</dt>
+        <div className="d-item">
+          <dt className="d-label">Prepared</dt>
           <dd className="d-content">
             {data.prepared_count} / {data.queued_count}
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Status:</dt>
+        <div className="d-item">
+          <dt className="d-label">Status</dt>
           <dd className="d-content">
             <Badge variant="outline" {...getStatusBadgeProps(data.finished)}>
               <span className="text-xs capitalize">
@@ -61,26 +61,26 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
             </Badge>
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Delivered:</dt>
+        <div className="d-item">
+          <dt className="d-label">Delivered</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('delivered')}>{data.delivered_count}</Badge>
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Opened:</dt>
+        <div className="d-item">
+          <dt className="d-label">Opened</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('opened')}>{data.opened_count}</Badge>
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Bounced:</dt>
+        <div className="d-item">
+          <dt className="d-label">Bounced</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('bounced')}>{data.bounced_count}</Badge>
           </dd>
         </div>
-        <div className="d-item border-none">
-          <dt className="d-label text-end pr-5">Complained:</dt>
+        <div className="d-item">
+          <dt className="d-label">Complained</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('complained')}>{data.complained_count}</Badge>
           </dd>

@@ -1,4 +1,7 @@
 import { DataTable } from '@/components/data-table'
+import { FilterButton } from '@/components/filters/filter-button'
+import { FilterDialog, type FilterDialogHandle } from '@/components/filters/filter-dialog'
+import { TagsPreview } from '@/components/tags-preview/tags-preview'
 import {
   CloneTemplateDialog,
   type CloneTemplateDialogHandle,
@@ -11,17 +14,19 @@ import { NodeENVType } from '@/libraries/fetch'
 import {
   useCloneTemplate,
   useDeleteTemplate,
+  useGetTagTemplate,
   useTemplates,
 } from '@/resources/hooks/template/use-template'
 import { TemplateType } from '@/resources/queries/template'
 import { generateRandomString } from '@/utils/helpers/slug.helper'
+import { useScopedParams } from '@/utils/helpers/params.helper'
 import { Button } from '@shadcn/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
 import { ColumnDef } from '@tanstack/react-table'
-import { CopyCheck, Edit, EyeIcon, MoreVertical, Plus, Send, Trash2 } from 'lucide-react'
-import { useMemo, useRef } from 'react'
+import { CopyCheck, Edit, EyeIcon, MoreVertical, Send, Trash2 } from 'lucide-react'
+import { Activity, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { EmptyContent, toast } from 'tessera-ui'
+import { EmptyContent, NewButton, ResourceID, toast } from 'tessera-ui'
 import { DateTime } from 'tessera-ui/components'
 import DeleteConfirmation, {
   type DeleteConfirmationHandle,
@@ -35,6 +40,7 @@ interface TemplatesListingContentProps {
     page: number
     size: number
   }
+  tag: string[]
   authLoading: boolean
 }
 
@@ -43,6 +49,7 @@ export function TemplatesListingContent({
   token,
   nodeEnv,
   pagination,
+  tag,
   authLoading,
 }: TemplatesListingContentProps) {
   const navigate = useNavigate()
@@ -50,12 +57,33 @@ export function TemplatesListingContent({
   const cloneTemplateDialogRef = useRef<CloneTemplateDialogHandle>(null)
   const sendEmailDialogRef = useRef<SendEmailDialogHandle>(null)
   const config = { apiUrl, token, nodeEnv }
+  const { getScopedSearch } = useScopedParams()
+  const filterDialogRef = useRef<FilterDialogHandle>(null)
+
+  const { data: tags, isLoading: isLoadingTagTemplate } = useGetTagTemplate(config, {
+    enabled: !!token && !authLoading,
+  })
 
   const { data, isLoading, error } = useTemplates(
     config,
-    { page: pagination.page, size: pagination.size },
+    { page: pagination.page, size: pagination.size, tag },
     { enabled: !!token && !authLoading }
   )
+
+  const handleOpenTagFilter = () => {
+    filterDialogRef.current?.open({
+      title: 'Filter Templates',
+      label: 'Tags',
+      value: tag,
+      placeholder: 'Select or search tags',
+      onApply: (values) => navigate(getScopedSearch({ tag: values, page: 1 })),
+      onClear: handleClearTagFilter,
+    })
+  }
+
+  const handleClearTagFilter = () => {
+    navigate(getScopedSearch({ tag: [], page: 1 }))
+  }
 
   const { mutateAsync: deleteTemplate } = useDeleteTemplate(config, {
     onSuccess: () => {
@@ -166,12 +194,30 @@ export function TemplatesListingContent({
         },
       },
       {
+        accessorKey: 'tags',
+        header: 'Tags',
+        size: 170,
+        cell: ({ row }) => {
+          const tags = row.original.tags || []
+
+          return <TagsPreview tags={tags} />
+        },
+      },
+      {
         accessorKey: 'created_at',
         header: 'Created',
         size: 200,
         cell: ({ row }) => (
           <DateTime date={row.getValue('created_at') as string} formatStr="dd/MM/yyyy HH:mm:ss" />
         ),
+      },
+      {
+        id: 'id',
+        header: 'ID',
+        size: 60,
+        cell: ({ row }) => {
+          return <ResourceID value={row.original.id} />
+        },
       },
       {
         id: 'actions',
@@ -252,20 +298,57 @@ export function TemplatesListingContent({
 
   return (
     <div className="h-full page-content">
-      <div className="mb-5 flex items-center animate-slide-up justify-between">
+      <div className="relative z-10 mb-5 flex items-center animate-slide-up justify-between">
         <h1 className="page-title">Templates</h1>
-        <Link to="/templates/new">
-          <Button size="sm">
-            <Plus size={16} />
-            New Template
-          </Button>
-        </Link>
+
+        <div className="flex items-center gap-2">
+          <Activity mode={tag.length === 0 && data?.total === 0 ? 'hidden' : 'visible'}>
+            <FilterButton
+              count={tag.length}
+              onClick={handleOpenTagFilter}
+              disabled={isLoadingTagTemplate}
+            />
+          </Activity>
+          <NewButton label="New Template" onClick={() => navigate('/templates/new')} />
+        </div>
       </div>
 
       <div className="animate-slide-up">
-        <DataTable columns={columns} data={data?.items || []} meta={meta} isLoading={isLoading} />
+        <DataTable
+          columns={columns}
+          data={data?.items || []}
+          meta={meta}
+          isLoading={isLoading}
+          empty={
+            <EmptyContent
+              image="/images/empty-provider.png"
+              title={tag.length > 0 ? 'No templates found yet' : 'No templates yet'}
+              description={
+                tag.length > 0
+                  ? 'No templates match the selected tags.'
+                  : 'Create your first template to start sending emails.'
+              }>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="black"
+                  onClick={() => {
+                    if (tag.length > 0) handleOpenTagFilter()
+                    else navigate('/templates/new')
+                  }}>
+                  {tag.length > 0 ? 'Chage Filter' : 'New Template'}
+                </Button>
+                <Activity mode={tag.length === 0 ? 'hidden' : 'visible'}>
+                  <Button variant="outline" onClick={handleClearTagFilter}>
+                    Reset Filter
+                  </Button>
+                </Activity>
+              </div>
+            </EmptyContent>
+          }
+        />
       </div>
 
+      <FilterDialog ref={filterDialogRef} items={tags} />
       <DeleteConfirmation ref={deleteConfirmationRef} />
       <CloneTemplateDialog ref={cloneTemplateDialogRef} />
       <SendEmailDialog ref={sendEmailDialogRef} config={config} />

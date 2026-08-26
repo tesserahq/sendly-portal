@@ -17,4 +17,5 @@ export interface IQueryParams {
   page?: number
   size?: number
   q?: string
+  tag?: string[]
 }

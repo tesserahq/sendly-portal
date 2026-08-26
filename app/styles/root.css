@@ -42,7 +42,7 @@ body {
     --primary-foreground: 0, 0%, 100%;
 
     --secondary: 30, 100%, 96%; /* light peach */
-    --secondary-foreground: 21, 100%, 20%;
+    --secondary-foreground: 0, 0%, 9%; /* #171717 */
 
     --muted: 30, 40%, 94%;
     --muted-foreground: 21, 15%, 40%;

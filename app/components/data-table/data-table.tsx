@@ -129,8 +129,8 @@ export function DataTable<TData, TValue>({
                 ))}
 
               {!isLoading && table.getRowModel().rows?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={columns.length} className={cn(!empty && 'h-24 text-center')}>
                     {empty}
                   </TableCell>
                 </TableRow>
@@ -139,7 +139,7 @@ export function DataTable<TData, TValue>({
           </Table>
         </div>
       </div>
-      {meta?.size && (
+      {meta && meta.total > 0 && (
         <div className="border-input bg-card dark:bg-navy-800 sticky bottom-0 z-10 border-t p-3">
           <Pagination meta={meta} scope={paginationScope} callback={callbackPagination} />
         </div>
