@@ -15,6 +15,7 @@ export interface TemplateType {
   }
   created_at: string
   updated_at: string
+  tags: string[]
 }
 
 export interface CreateTemplatePayload {
@@ -25,6 +26,7 @@ export interface CreateTemplatePayload {
   from_email?: string
   reply_to?: string
   layout_id?: string
+  tags?: string[]
 }
 
 export interface UpdateTemplatePayload {
@@ -35,6 +37,7 @@ export interface UpdateTemplatePayload {
   from_email?: string | null
   reply_to?: string | null
   layout_id?: string | null
+  tags?: string[]
 }
 
 export type CloneTemplatePayload = {

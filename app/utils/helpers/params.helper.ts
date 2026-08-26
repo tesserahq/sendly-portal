@@ -12,17 +12,22 @@ export function getScopedParams(request: Request, scope: string = '') {
       )
 }
 
-type ParamsType = Record<string, string | number | boolean | undefined>
+type ParamsType = Record<string, string | number | boolean | string[] | undefined>
 export function useScopedParams(scope: string = '') {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const prefix = scope ? `${scope}:` : ''
   const updateSearchParams = (params: ParamsType) => {
     Object.entries(params).forEach(([key, value]) => {
-      if (value === undefined) {
-        searchParams.delete(`${prefix}${key}`)
+      const paramKey = `${prefix}${key}`
+      searchParams.delete(paramKey)
+
+      if (value === undefined) return
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => searchParams.append(paramKey, v))
       } else {
-        searchParams.set(`${prefix}${key}`, String(value))
+        searchParams.set(paramKey, String(value))
       }
     })
   }

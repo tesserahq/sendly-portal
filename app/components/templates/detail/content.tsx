@@ -1,5 +1,6 @@
 import { DetailContent } from '@/components/detail-content'
 import { AppPreloader } from '@/components/loader/pre-loader'
+import { TagsPreview } from '@/components/tags-preview/tags-preview'
 import {
   CloneTemplateDialog,
   type CloneTemplateDialogHandle,
@@ -202,6 +203,12 @@ export function TemplateOverviewContent({
               ) : (
                 'N/A'
               )}
+            </dd>
+          </div>
+          <div className="d-item">
+            <dt className="d-label">Tags</dt>
+            <dd className="d-content">
+              <TagsPreview tags={data.tags || []} showAll />
             </dd>
           </div>
           <div className="d-item">

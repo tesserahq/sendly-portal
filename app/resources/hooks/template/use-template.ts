@@ -10,6 +10,7 @@ import {
   TemplateType,
   CloneTemplatePayload,
   cloneTemplate,
+  getTagTemplate,
 } from '@/resources/queries/template'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -31,6 +32,7 @@ export const templateQueryKeys = {
   list: (params: IQueryParams) => [...templateQueryKeys.lists(), params] as const,
   details: () => [...templateQueryKeys.all, 'detail'] as const,
   detail: (id: string) => [...templateQueryKeys.details(), id] as const,
+  tags: () => [...templateQueryKeys.all, 'tags'] as const,
 }
 
 export function useTemplates(
@@ -78,6 +80,28 @@ export function useTemplate(
   })
 }
 
+export function useGetTagTemplate(
+  config: IQueryConfig,
+  options?: { enabled?: boolean; staleTime?: number }
+) {
+  return useQuery({
+    queryKey: templateQueryKeys.tags(),
+    queryFn: async () => {
+      try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
+
+        return await getTagTemplate(config)
+      } catch (error: unknown) {
+        throw new QueryError((error as Error).message)
+      }
+    },
+    staleTime: options?.staleTime || 5 * 60 * 1000,
+    enabled: options?.enabled !== false,
+  })
+}
+
 export function useCreateTemplate(config: IQueryConfig) {
   const queryClient = useQueryClient()
 
@@ -85,6 +109,7 @@ export function useCreateTemplate(config: IQueryConfig) {
     mutationFn: (data: CreateTemplatePayload) => createTemplate(config, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueryKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: templateQueryKeys.tags() })
     },
   })
 }
@@ -97,6 +122,7 @@ export function useUpdateTemplate(config: IQueryConfig, id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: templateQueryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: templateQueryKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: templateQueryKeys.tags() })
     },
   })
 }

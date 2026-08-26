@@ -16,12 +16,13 @@ export async function loader({ request }: { request: Request }) {
 
   const apiUrl = process.env.API_URL
   const nodeEnv = process.env.NODE_ENV
+  const tag = new URL(request.url).searchParams.getAll('tag')
 
-  return { apiUrl, nodeEnv, pagination }
+  return { apiUrl, nodeEnv, pagination, tag }
 }
 
 export default function Templates() {
-  const { apiUrl, nodeEnv, pagination } = useLoaderData<typeof loader>()
+  const { apiUrl, nodeEnv, pagination, tag } = useLoaderData<typeof loader>()
   const { token, isLoadingIdenties } = useApp()
 
   if (isLoadingIdenties) {
@@ -34,6 +35,7 @@ export default function Templates() {
       token={token!}
       nodeEnv={nodeEnv!}
       pagination={pagination}
+      tag={tag}
       authLoading={isLoadingIdenties}
     />
   )

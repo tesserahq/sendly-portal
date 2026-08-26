@@ -8,7 +8,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Edit, EyeIcon, MoreVertical, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { EmptyContent } from 'tessera-ui'
+import { EmptyContent, NewButton, ResourceID } from 'tessera-ui'
 import { DateTime } from 'tessera-ui/components'
 import DeleteConfirmation, {
   type DeleteConfirmationHandle,
@@ -87,6 +87,14 @@ export function LayoutsListingContent({
         ),
       },
       {
+        id: 'id',
+        header: 'ID',
+        size: 60,
+        cell: ({ row }) => {
+          return <ResourceID value={row.original.id} />
+        },
+      },
+      {
         id: 'actions',
         header: '',
         size: 60,
@@ -151,14 +159,9 @@ export function LayoutsListingContent({
 
   return (
     <div className="h-full page-content">
-      <div className="animate-slide-up mb-5 flex items-center justify-between">
+      <div className="animate-slide-up relative z-10 mb-5 flex items-center justify-between">
         <h1 className="page-title">Layouts</h1>
-        <Link to="/layouts/new">
-          <Button size="sm">
-            <Plus size={16} />
-            New Layout
-          </Button>
-        </Link>
+        <NewButton label="New Layout" onClick={() => navigate('/layouts/new')} />
       </div>
 
       <div className="animate-slide-up">
