@@ -4,11 +4,11 @@ import { cn } from '@shadcn/lib/utils'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative h-full w-full overflow-auto">
+    <div className="scrollbar-sm relative h-full w-full overflow-auto">
       <table
         ref={ref}
         className={cn(
-          'dark:bg-sidebar-background w-full caption-bottom bg-white text-sm',
+          'dark:bg-sidebar-background min-w-full caption-bottom bg-white text-sm',
           className
         )}
         {...props}
