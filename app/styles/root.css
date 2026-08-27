@@ -418,5 +418,5 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 .page-content {
-  @apply mx-auto max-w-screen-2xl px-8 pt-5;
+  @apply mx-auto max-w-screen-2xl px-5 md:px-8 pt-5;
 }

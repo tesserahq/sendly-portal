@@ -144,7 +144,7 @@ export const RichEmailEditor = forwardRef<RichEmailEditorRef, RichEmailEditorPro
 
           {editor && (
             <Inspector.Root
-              className="re-inspector w-96! shrink-0 overflow-y-auto border-l p-3 text-sm">
+              className="re-inspector lg:w-96! shrink-0 overflow-y-auto border-l p-3 text-sm">
               <Inspector.Breadcrumb />
               <Inspector.Document />
               <Inspector.Node />

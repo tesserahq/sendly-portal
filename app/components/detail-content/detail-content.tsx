@@ -10,7 +10,7 @@ interface IPageContentProps {
 
 export function DetailContent({ title, actions, children, className }: IPageContentProps) {
   return (
-    <div className="animate-slide-up p-4">
+    <div className="animate-slide-up">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
