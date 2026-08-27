@@ -38,7 +38,7 @@ export default function BroadcastDetailLayout() {
       menuItems={menuItems}
       breadcrumbs={breadcrumbs}
       isLoading={!token || !params.batchID || isLoading}>
-      <div className="max-w-screen-2xl mx-auto p-3">
+      <div className="max-w-screen-2xl mx-auto">
         <Outlet />
       </div>
     </Layout.Detail>

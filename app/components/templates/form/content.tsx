@@ -245,197 +245,56 @@ export function TemplateFormContent({
   }
 
   return (
-    <DetailContent title={isEditing ? 'Edit Template' : 'New Template'}>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-3">
-          {/* Left sidebar — metadata */}
-          <div className="grid grid-cols-4 gap-5">
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <Label htmlFor="name" className="mb-0">
-                  Name
-                </Label>
-                <button
-                  type="button"
-                  className="text-xs leading-none text-muted-foreground hover:text-foreground
-                    cursor-pointer truncate max-w-[300px]"
-                  onClick={() => {
-                    setDraftAlias(alias)
-                    setAliasDialogOpen(true)
-                  }}>
-                  Alias {alias && <span className="font-mono text-foreground">:{alias}</span>}
-                </button>
-              </div>
-              <Input
-                id="name"
-                value={name}
-                autoFocus
-                onChange={(e) => {
-                  setName(e.target.value)
-                  const slug = slugify(e.target.value)
-                  setAlias(slug)
-                  setDraftAlias(slug)
-                }}
-                placeholder="Welcome Email"
-                required
-              />
-            </div>
-
-            <Dialog open={aliasDialogOpen} onOpenChange={setAliasDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Alias</DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col">
-                  <Label htmlFor="alias">Alias</Label>
-                  <Input
-                    id="alias"
-                    value={draftAlias}
-                    onChange={(e) => setDraftAlias(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
-                    placeholder="welcome-email"
-                    autoFocus
-                  />
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button
+    <div className="p-4 md:p-0">
+      <DetailContent title={isEditing ? 'Edit Template' : 'New Template'}>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            {/* Left sidebar — metadata */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <Label htmlFor="name" className="mb-0">
+                    Name
+                  </Label>
+                  <button
+                    type="button"
+                    className="text-xs leading-none text-muted-foreground hover:text-foreground
+                      cursor-pointer truncate max-w-[300px]"
                     onClick={() => {
-                      setAlias(draftAlias)
-                      setAliasDialogOpen(false)
+                      setDraftAlias(alias)
+                      setAliasDialogOpen(true)
                     }}>
-                    Save
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <div className="flex flex-col">
-              <Label htmlFor="subject">Subject</Label>
-              <Input
-                id="subject"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Welcome to ${app_name}!"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <Label htmlFor="from-email">From Email</Label>
-              <Input
-                id="from-email"
-                type="email"
-                value={fromEmail}
-                onChange={(e) => setFromEmail(e.target.value)}
-                placeholder="noreply@example.com"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <Label htmlFor="reply-to">Reply-To</Label>
-              <Input
-                id="reply-to"
-                type="email"
-                value={replyTo}
-                onChange={(e) => setReplyTo(e.target.value)}
-                placeholder="support@example.com"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-start gap-5 justify-between">
-            <div className="w-1/2">
-              <Label className="text-sm font-medium">Tags</Label>
-              <div className="flex items-center gap-2 mb-2">
-                <Input
-                  value={tag}
-                  onChange={(e) => setTag(sanitizeTagInput(e.target.value))}
-                  placeholder='Press "Enter" to add'
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddTags()
-                    }
-                  }}
-                />
-                <Button type="button" variant="outline" onClick={handleAddTags} disabled={!tag}>
-                  Add
-                </Button>
-              </div>
-              {tags.length > 0 && (
-                <div className="flex items-center gap-2">
-                  {tags.map((tagValue) => {
-                    return (
-                      <Badge
-                        key={tagValue}
-                        variant="outline"
-                        className="flex items-center gap-1 text-sm">
-                        {tagValue}
-                        <div
-                          className="cursor-pointer hover:text-destructive"
-                          onClick={() => handleRemoveTag(tagValue)}>
-                          <X size={15} />
-                        </div>
-                      </Badge>
-                    )
-                  })}
+                    Alias {alias && <span className="font-mono text-foreground">:{alias}</span>}
+                  </button>
                 </div>
-              )}
-            </div>
+                <Input
+                  id="name"
+                  value={name}
+                  autoFocus
+                  onChange={(e) => {
+                    setName(e.target.value)
+                    const slug = slugify(e.target.value)
+                    setAlias(slug)
+                    setDraftAlias(slug)
+                  }}
+                  placeholder="Welcome Email"
+                  required
+                />
+              </div>
 
-            <div className="w-1/2">
-              <Label htmlFor="layout" className="text-sm font-medium">
-                Layout:
-              </Label>
-              <Select
-                key={`${layoutsData ? 'ready' : 'loading'}-${layoutsData?.items.length ?? 0}`}
-                value={layoutId}
-                disabled={isLoadingLayouts}
-                onValueChange={(value) => {
-                  if (value === 'new_layout') {
-                    setNewLayoutOpen(true)
-                  } else if (value) {
-                    setLayoutId(value)
-                  }
-                }}>
-                <SelectTrigger id="layout">
-                  <SelectValue placeholder="No layout" />
-                </SelectTrigger>
-                <SelectContent align="end">
-                  <SelectItem value={NO_LAYOUT}>No layout</SelectItem>
-                  {layoutsData?.items.map((layout) => (
-                    <SelectItem key={layout.id} value={layout.id}>
-                      {layout.name}
-                    </SelectItem>
-                  ))}
-                  <SelectItem
-                    value="new_layout"
-                    className="border-t rounded-none hover:bg-transparent! hover:opacity-80
-                      hover:cursor-pointer py-2">
-                    <div className="flex items-center gap-2 w-full">
-                      <Plus size={14} className="text-muted-foreground" />
-                      <span>New layout</span>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Dialog form new layouts */}
-              <Dialog open={newLayoutOpen} onOpenChange={setNewLayoutOpen}>
-                <DialogContent className="min-w-5xl">
+              <Dialog open={aliasDialogOpen} onOpenChange={setAliasDialogOpen}>
+                <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>New Layout</DialogTitle>
+                    <DialogTitle>Edit Alias</DialogTitle>
                   </DialogHeader>
-                  <div className="flex flex-col gap-4 w-full">
-                    <LayoutFormFields
-                      name={newLayoutName}
-                      onNameChange={setNewLayoutName}
-                      alias={newLayoutAlias}
-                      onAliasChange={setNewLayoutAlias}
-                      html={newLayoutHtml}
-                      onHtmlChange={setNewLayoutHtml}
-                      htmlHeight="400px"
+                  <div className="flex flex-col">
+                    <Label htmlFor="alias">Alias</Label>
+                    <Input
+                      id="alias"
+                      value={draftAlias}
+                      onChange={(e) => setDraftAlias(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
+                      placeholder="welcome-email"
+                      autoFocus
                     />
                   </div>
                   <DialogFooter>
@@ -443,71 +302,216 @@ export function TemplateFormContent({
                       <Button variant="outline">Cancel</Button>
                     </DialogClose>
                     <Button
-                      disabled={!newLayoutAlias || !newLayoutHtml || createLayoutMutation.isPending}
-                      onClick={handleCreateLayout}>
-                      {createLayoutMutation.isPending ? 'Creating…' : 'Create Layout'}
+                      onClick={() => {
+                        setAlias(draftAlias)
+                        setAliasDialogOpen(false)
+                      }}>
+                      Save
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            </div>
-          </div>
 
-          {/* Right — HTML editor */}
-          <div className="flex flex-col">
-            <Label className="text-sm font-medium">Content</Label>
-
-            <div className="flex items-center border-b">
-              <TabButton active={tab === 'edit'} onClick={() => handleTabChange('edit')}>
-                Design
-              </TabButton>
-              <TabButton active={tab === 'html'} onClick={() => handleTabChange('html')}>
-                HTML
-              </TabButton>
-            </div>
-            <div className="border border-t-0 rounded-b overflow-hidden">
-              <div className={tab === 'edit' ? '' : 'hidden'}>
-                <RichEmailEditor
-                  ref={richEditorRef}
-                  height="550px"
-                  onReady={() => setEditorReady(true)}
-                  onUploadImage={handleUploadImage}
+              <div className="flex flex-col">
+                <Label htmlFor="subject">Subject</Label>
+                <Input
+                  id="subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="Welcome to ${app_name}!"
+                  required
                 />
               </div>
-              {tab === 'html' && (
-                <Editor
-                  height="550px"
-                  language="html"
-                  value={htmlValue}
-                  onChange={(v) => setHtmlValue(v ?? '')}
-                  onMount={handleHtmlEditorMount}
-                  theme="vs-dark"
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 13,
-                    lineNumbers: 'on',
-                    scrollBeyondLastLine: false,
-                    wordWrap: 'on',
-                    tabSize: 2,
-                    automaticLayout: true,
-                  }}
+
+              <div className="flex flex-col">
+                <Label htmlFor="from-email">From Email</Label>
+                <Input
+                  id="from-email"
+                  type="email"
+                  value={fromEmail}
+                  onChange={(e) => setFromEmail(e.target.value)}
+                  placeholder="noreply@example.com"
                 />
-              )}
+              </div>
+
+              <div className="flex flex-col">
+                <Label htmlFor="reply-to">Reply-To</Label>
+                <Input
+                  id="reply-to"
+                  type="email"
+                  value={replyTo}
+                  onChange={(e) => setReplyTo(e.target.value)}
+                  placeholder="support@example.com"
+                />
+              </div>
+            </div>
+
+            <div className="flex lg:flex-row flex-col items-start gap-5 justify-between">
+              <div className="w-full lg:w-1/2">
+                <Label className="text-sm font-medium">Tags</Label>
+                <div className="flex items-center gap-2 mb-2">
+                  <Input
+                    value={tag}
+                    onChange={(e) => setTag(sanitizeTagInput(e.target.value))}
+                    placeholder='Press "Enter" to add'
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddTags()
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" onClick={handleAddTags} disabled={!tag}>
+                    Add
+                  </Button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    {tags.map((tagValue) => {
+                      return (
+                        <Badge
+                          key={tagValue}
+                          variant="outline"
+                          className="flex items-center gap-1 text-sm">
+                          {tagValue}
+                          <div
+                            className="cursor-pointer hover:text-destructive"
+                            onClick={() => handleRemoveTag(tagValue)}>
+                            <X size={15} />
+                          </div>
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              <div className="w-full lg:w-1/2">
+                <Label htmlFor="layout" className="text-sm font-medium">
+                  Layout:
+                </Label>
+                <Select
+                  key={`${layoutsData ? 'ready' : 'loading'}-${layoutsData?.items.length ?? 0}`}
+                  value={layoutId}
+                  disabled={isLoadingLayouts}
+                  onValueChange={(value) => {
+                    if (value === 'new_layout') {
+                      setNewLayoutOpen(true)
+                    } else if (value) {
+                      setLayoutId(value)
+                    }
+                  }}>
+                  <SelectTrigger id="layout">
+                    <SelectValue placeholder="No layout" />
+                  </SelectTrigger>
+                  <SelectContent align="end">
+                    <SelectItem value={NO_LAYOUT}>No layout</SelectItem>
+                    {layoutsData?.items.map((layout) => (
+                      <SelectItem key={layout.id} value={layout.id}>
+                        {layout.name}
+                      </SelectItem>
+                    ))}
+                    <SelectItem
+                      value="new_layout"
+                      className="border-t rounded-none hover:bg-transparent! hover:opacity-80
+                        hover:cursor-pointer py-2">
+                      <div className="flex items-center gap-2 w-full">
+                        <Plus size={14} className="text-muted-foreground" />
+                        <span>New layout</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Dialog form new layouts */}
+                <Dialog open={newLayoutOpen} onOpenChange={setNewLayoutOpen}>
+                  <DialogContent className="min-w-5xl">
+                    <DialogHeader>
+                      <DialogTitle>New Layout</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4 w-full">
+                      <LayoutFormFields
+                        name={newLayoutName}
+                        onNameChange={setNewLayoutName}
+                        alias={newLayoutAlias}
+                        onAliasChange={setNewLayoutAlias}
+                        html={newLayoutHtml}
+                        onHtmlChange={setNewLayoutHtml}
+                        htmlHeight="400px"
+                      />
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button
+                        disabled={
+                          !newLayoutAlias || !newLayoutHtml || createLayoutMutation.isPending
+                        }
+                        onClick={handleCreateLayout}>
+                        {createLayoutMutation.isPending ? 'Creating…' : 'Create Layout'}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+
+            {/* Right — HTML editor */}
+            <div className="flex flex-col">
+              <Label className="text-sm font-medium">Content</Label>
+
+              <div className="flex items-center border-b">
+                <TabButton active={tab === 'edit'} onClick={() => handleTabChange('edit')}>
+                  Design
+                </TabButton>
+                <TabButton active={tab === 'html'} onClick={() => handleTabChange('html')}>
+                  HTML
+                </TabButton>
+              </div>
+              <div className="border border-t-0 rounded-b overflow-hidden">
+                <div className={tab === 'edit' ? '' : 'hidden'}>
+                  <RichEmailEditor
+                    ref={richEditorRef}
+                    height="550px"
+                    onReady={() => setEditorReady(true)}
+                    onUploadImage={handleUploadImage}
+                  />
+                </div>
+                {tab === 'html' && (
+                  <Editor
+                    height="550px"
+                    language="html"
+                    value={htmlValue}
+                    onChange={(v) => setHtmlValue(v ?? '')}
+                    onMount={handleHtmlEditorMount}
+                    theme="vs-dark"
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 13,
+                      lineNumbers: 'on',
+                      scrollBeyondLastLine: false,
+                      wordWrap: 'on',
+                      tabSize: 2,
+                      automaticLayout: true,
+                    }}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center justify-end gap-3">
-          <Link to={isEditing ? `/templates/${templateId}` : '/templates'}>
-            <Button type="button" variant="outline">
-              Cancel
+          <div className="flex items-center justify-end gap-3">
+            <Link to={isEditing ? `/templates/${templateId}` : '/templates'}>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </Link>
+            <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? 'Saving…' : 'Save'}
             </Button>
-          </Link>
-          <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Saving…' : 'Save'}
-          </Button>
+          </div>
         </div>
-      </div>
-    </DetailContent>
+      </DetailContent>
+    </div>
   )
 }

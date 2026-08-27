@@ -40,7 +40,7 @@ export default function EmailActivityDetailLayout() {
       menuItems={menuItems}
       breadcrumbs={breadcrumbs}
       isLoading={!token || !params.emailID || isLoading}>
-      <div className="max-w-screen-2xl mx-auto p-3">
+      <div className="max-w-screen-2xl mx-auto">
         <Outlet />
       </div>
     </Layout.Detail>

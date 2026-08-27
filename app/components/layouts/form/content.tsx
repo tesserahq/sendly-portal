@@ -81,29 +81,31 @@ export function LayoutFormContent({ apiUrl, token, nodeEnv, layoutId }: LayoutFo
   }
 
   return (
-    <DetailContent title={isEditing ? 'Edit Layout' : 'New Layout'}>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <LayoutFormFields
-          name={name}
-          onNameChange={setName}
-          alias={alias}
-          onAliasChange={setAlias}
-          html={html}
-          onHtmlChange={setHtml}
-          htmlHeight="550px"
-        />
+    <div className="p-4 md:p-0">
+      <DetailContent title={isEditing ? 'Edit Layout' : 'New Layout'}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <LayoutFormFields
+            name={name}
+            onNameChange={setName}
+            alias={alias}
+            onAliasChange={setAlias}
+            html={html}
+            onHtmlChange={setHtml}
+            htmlHeight="550px"
+          />
 
-        <div className="flex items-center justify-end gap-3">
-          <Link to={isEditing ? `/layouts/${layoutId}` : '/layouts'}>
-            <Button type="button" variant="outline">
-              Cancel
+          <div className="flex items-center justify-end gap-3">
+            <Link to={isEditing ? `/layouts/${layoutId}` : '/layouts'}>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </Link>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving…' : 'Save'}
             </Button>
-          </Link>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving…' : 'Save'}
-          </Button>
-        </div>
-      </form>
-    </DetailContent>
+          </div>
+        </form>
+      </DetailContent>
+    </div>
   )
 }

@@ -32,7 +32,7 @@ export function LayoutFormFields({
 
   return (
     <>
-      <div className="flex justify-between items-center w-full gap-5">
+      <div className="flex flex-col md:flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col w-full">
           <Label htmlFor="lf-name">Name</Label>
           <Input
@@ -57,7 +57,7 @@ export function LayoutFormFields({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-5">
         <Label htmlFor="lf-html" className="mb-0">
           HTML Body
         </Label>
