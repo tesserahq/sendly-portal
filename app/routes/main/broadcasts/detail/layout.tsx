@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useBroadcastDetail } from '@/resources/hooks/broadcast/use-broadcast'
-import { FileText } from 'lucide-react'
+import { FileText, Users } from 'lucide-react'
 import { Outlet, useLoaderData, useParams } from 'react-router'
 import { useApp } from 'tessera-ui'
 import { BreadcrumbItemData, DetailItemsProps, Layout } from 'tessera-ui/layouts'
@@ -25,6 +25,11 @@ export default function BroadcastDetailLayout() {
       title: 'Overview',
       path: `/broadcasts/${params.batchID}/overview`,
       icon: FileText as any,
+    },
+    {
+      title: 'Recipients',
+      path: `/broadcasts/${params.batchID}/recipients`,
+      icon: Users as any,
     },
   ]
 

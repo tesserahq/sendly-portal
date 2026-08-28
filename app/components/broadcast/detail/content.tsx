@@ -74,6 +74,12 @@ export function BroadcastDetailContent({ config, batchID }: BroadcastDetailConte
           </dd>
         </div>
         <div className="d-item">
+          <dt className="d-label">Clicked</dt>
+          <dd className="d-content">
+            <Badge {...getEmailEventTypeBadge('clicked')}>{data.clicked_count}</Badge>
+          </dd>
+        </div>
+        <div className="d-item">
           <dt className="d-label">Bounced</dt>
           <dd className="d-content">
             <Badge {...getEmailEventTypeBadge('bounced')}>{data.bounced_count}</Badge>
