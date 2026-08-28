@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IQueryConfig, IQueryParams } from '@/resources/queries'
-import { getBroadcastDetail, getBroadcastListing } from '@/resources/queries/broadcast'
+import {
+  getBroadcastDetail,
+  getBroadcastListing,
+  getBroadcastRecipients,
+} from '@/resources/queries/broadcast'
 import { useQuery } from '@tanstack/react-query'
 
 /**
@@ -28,6 +32,8 @@ export const broadcastQueryKeys = {
     [...broadcastQueryKeys.lists(), config, params] as const,
   details: () => [...broadcastQueryKeys.all, 'detail'] as const,
   detail: (id: string) => [...broadcastQueryKeys.details(), id] as const,
+  recipients: (config: IQueryConfig, id: string, params: IQueryParams) =>
+    [...broadcastQueryKeys.detail(id), 'recipients', config, params] as const,
 }
 
 /**
@@ -83,6 +89,39 @@ export function useBroadcastDetail(
           throw new QueryError('Token is required', 'TOKEN_REQUIRED')
         }
         return await getBroadcastDetail(config, id)
+      } catch (error: any) {
+        throw new QueryError(error)
+      }
+    },
+    staleTime: options?.staleTime || 5 * 60 * 1000, // 5 minutes
+    enabled: options?.enabled !== false && !!id,
+  })
+}
+
+/**
+ * Hook to fetch paginated per-recipient results for a broadcast batch
+ * @param config Broadcast query configuration
+ * @param id Broadcast batch_id
+ * @param params Broadcast query parameters
+ * @param options Broadcast query options
+ */
+export function useBroadcastRecipients(
+  config: IQueryConfig,
+  id: string,
+  params: IQueryParams,
+  options?: {
+    enabled?: boolean
+    staleTime?: number
+  }
+) {
+  return useQuery({
+    queryKey: broadcastQueryKeys.recipients(config, id, params),
+    queryFn: async () => {
+      try {
+        if (!config.token) {
+          throw new QueryError('Token is required', 'TOKEN_REQUIRED')
+        }
+        return await getBroadcastRecipients(config, id, params)
       } catch (error: any) {
         throw new QueryError(error)
       }

@@ -18,6 +18,7 @@ export default [
     route('broadcasts/:batchID', 'routes/main/broadcasts/detail/layout.tsx', [
       index('routes/main/broadcasts/detail/index.tsx'),
       route('overview', 'routes/main/broadcasts/detail/overview.tsx'),
+      route('recipients', 'routes/main/broadcasts/detail/recipients.tsx'),
     ]),
     route('providers', 'routes/main/providers/index.tsx'),
     route('layouts', 'routes/main/layouts/layout.tsx', [

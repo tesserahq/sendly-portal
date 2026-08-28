@@ -38,6 +38,43 @@ export const getEmailStatusBadge = (
   }
 }
 
+export type RecipientOutcome = 'suppressed' | 'pending' | 'failed'
+
+/**
+ * Derives the outcome of a broadcast recipient that never produced an email
+ * (email_id is null): suppressed recipients are never prepared; unsuppressed
+ * recipients that aren't prepared are either still being processed
+ * ("pending") or, once the batch has finished, stuck without an email
+ * ("failed").
+ */
+export const resolveRecipientOutcome = (
+  suppressed: boolean,
+  prepared: boolean,
+  batchFinished: boolean
+): RecipientOutcome => {
+  if (suppressed) return 'suppressed'
+  if (!prepared) return batchFinished ? 'failed' : 'pending'
+  // prepared=true with no email_id isn't expected to happen; treat it as a
+  // failure rather than silently rendering nothing.
+  return 'failed'
+}
+
+export const getRecipientOutcomeBadge = (
+  outcome: RecipientOutcome
+): { variant: BadgeProps['variant']; className: string } => {
+  switch (outcome) {
+    case 'suppressed':
+      return { variant: 'outline', className: 'border-gray-400 text-gray-600 bg-gray-500/5' }
+    case 'pending':
+      return {
+        variant: 'outline',
+        className: 'border-yellow-500 text-yellow-600 bg-yellow-500/5',
+      }
+    case 'failed':
+      return { variant: 'destructive', className: 'bg-rose-600 text-white' }
+  }
+}
+
 export const getEmailEventTypeBadge = (
   status?: EventType
 ): { variant: BadgeProps['variant']; className: string } => {
