@@ -4,6 +4,7 @@ import { DateTime, ResourceID } from 'tessera-ui'
 import { Link } from 'react-router'
 import { Badge } from '@/modules/shadcn/ui/badge'
 import { getEmailEventTypeBadge } from '@/utils/helpers/badge.helper'
+import { TagsPreview } from '@/components/tags-preview/tags-preview'
 
 export const columns: ColumnDef<BroadcastBatchType>[] = [
   {
@@ -75,6 +76,16 @@ export const columns: ColumnDef<BroadcastBatchType>[] = [
     cell: ({ row }) => (
       <Badge {...getEmailEventTypeBadge('complained')}>{row.original.complained_count}</Badge>
     ),
+  },
+  {
+    accessorKey: 'tags',
+    header: 'Tags',
+    size: 170,
+    cell: ({ row }) => {
+      const tags = row.original.tags || []
+
+      return <TagsPreview tags={tags} />
+    },
   },
   {
     accessorKey: 'created_at',

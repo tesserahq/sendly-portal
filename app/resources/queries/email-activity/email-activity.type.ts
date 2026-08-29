@@ -19,6 +19,7 @@ export interface EmailActivityType {
   created_at: string
   updated_at: string
   events: EmailEvent[]
+  tags: string[]
 }
 
 export interface EmailEvent {
