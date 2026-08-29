@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/modules/shadcn/ui/badge'
 import { getEmailStatusBadge } from '@/utils/helpers/badge.helper'
 import { EmailActivityType } from '@/resources/queries/email-activity'
+import { TagsPreview } from '@/components/tags-preview/tags-preview'
 import { DateTime } from 'tessera-ui'
 import {
   Tooltip,
@@ -72,6 +73,16 @@ export const columns: ColumnDef<EmailActivityType>[] = [
     cell: ({ row }) => {
       const { provider } = row.original
       return <div className="max-w-[200px] truncate">{provider || '-'}</div>
+    },
+  },
+  {
+    accessorKey: 'tags',
+    header: 'Tags',
+    size: 170,
+    cell: ({ row }) => {
+      const tags = row.original.tags || []
+
+      return <TagsPreview tags={tags} />
     },
   },
   {

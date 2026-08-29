@@ -15,6 +15,7 @@ export interface BroadcastBatchType {
   opened_count: number
   clicked_count: number
   created_at: string
+  tags: string[]
 }
 
 export interface BroadcastStatusType {
