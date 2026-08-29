@@ -10,7 +10,6 @@ import { LayoutFormFields } from '@/components/layouts/form/fields'
 import { AppPreloader } from '@/components/loader/pre-loader'
 import { useHandleApiError } from '@/hooks/useHandleApiError'
 import { NodeENVType } from '@/libraries/fetch'
-import { Badge } from '@/modules/shadcn/ui/badge'
 import { useCreateLayout, useLayouts } from '@/resources/hooks/layout/use-layout'
 import {
   useCreateTemplate,
@@ -31,11 +30,11 @@ import {
 import { Input } from '@shadcn/ui/input'
 import { Label } from '@shadcn/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shadcn/ui/select'
-import { Plus, X } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { EmptyContent } from 'tessera-ui'
-import { toast } from 'tessera-ui/components'
+import { TagsInput, toast } from 'tessera-ui/components'
 
 const NO_LAYOUT = '__none__'
 const SIX_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 6
@@ -79,7 +78,6 @@ export function TemplateFormContent({
   const [tab, setTab] = useState<'edit' | 'html'>('edit')
   const [htmlValue, setHtmlValue] = useState('')
   const { handleMount: handleHtmlEditorMount } = useHtmlValidation(htmlValue)
-  const [tag, setTag] = useState<string>('')
   const [tags, setTags] = useState<string[]>([])
 
   const {
@@ -216,20 +214,6 @@ export function TemplateFormContent({
     }
   }
 
-  const sanitizeTagInput = (value: string) => value.replace(/[^a-zA-Z0-9._-]/g, '')
-
-  const handleAddTags = () => {
-    if (!tag) return
-    if (tags.includes(tag)) return
-
-    setTags((prev) => [...prev, tag])
-    setTag('')
-  }
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags((prev) => prev.filter((val) => val !== tagToRemove))
-  }
-
   if (isEditing && isLoadingDetail) {
     return <AppPreloader className="min-h-screen" />
   }
@@ -349,40 +333,9 @@ export function TemplateFormContent({
             <div className="flex lg:flex-row flex-col items-start gap-5 justify-between">
               <div className="w-full lg:w-1/2">
                 <Label className="text-sm font-medium">Tags</Label>
-                <div className="flex items-center gap-2 mb-2">
-                  <Input
-                    value={tag}
-                    onChange={(e) => setTag(sanitizeTagInput(e.target.value))}
-                    placeholder='Press "Enter" to add'
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleAddTags()
-                      }
-                    }}
-                  />
-                  <Button type="button" variant="outline" onClick={handleAddTags} disabled={!tag}>
-                    Add
-                  </Button>
+                <div className="mt-1.5">
+                  <TagsInput value={tags} onChange={setTags} />
                 </div>
-                {tags.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    {tags.map((tagValue) => {
-                      return (
-                        <Badge
-                          key={tagValue}
-                          variant="outline"
-                          className="flex items-center gap-1 text-sm">
-                          {tagValue}
-                          <div
-                            className="cursor-pointer hover:text-destructive"
-                            onClick={() => handleRemoveTag(tagValue)}>
-                            <X size={15} />
-                          </div>
-                        </Badge>
-                      )
-                    })}
-                  </div>
-                )}
               </div>
 
               <div className="w-full lg:w-1/2">
