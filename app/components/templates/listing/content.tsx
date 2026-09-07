@@ -117,15 +117,17 @@ export function TemplatesListingContent({
 
     cloneTemplateDialogRef.current?.open({
       title: 'Clone Template',
-      description: `Clone "${template.name}"? A copy named "${clonedName}" will be created.`,
-      onClone: async () => {
+      description: `Clone "${template.name}" with a new name and alias.`,
+      initialName: clonedName,
+      initialAlias: clonedAlias,
+      onClone: async ({ name, alias }) => {
         cloneTemplateDialogRef.current?.updateConfig({ isLoading: true })
         try {
           const cloned = await cloneTemplateMutation.mutateAsync({
             id: template.id,
             data: {
-              name: clonedName,
-              alias: clonedAlias,
+              name,
+              alias,
               tags: [],
             },
           })

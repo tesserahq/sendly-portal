@@ -81,7 +81,7 @@ export function LayoutFormContent({ apiUrl, token, nodeEnv, layoutId }: LayoutFo
   }
 
   return (
-    <div className="p-4 md:p-0">
+    <div className="p-4">
       <DetailContent title={isEditing ? 'Edit Layout' : 'New Layout'}>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <LayoutFormFields

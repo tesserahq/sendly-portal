@@ -8,13 +8,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@shadcn/ui/dialog'
+import { Input } from '@shadcn/ui/input'
+import { Label } from '@shadcn/ui/label'
 import { CopyCheck, Loader2 } from 'lucide-react'
 import { forwardRef, useImperativeHandle, useState } from 'react'
+
+const slugify = (v: string) =>
+  v
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9_-]/g, '')
 
 export interface CloneConfirmationConfig {
   title: string
   description: string
-  onClone: () => void | Promise<void>
+  initialName: string
+  initialAlias: string
+  onClone: (values: { name: string; alias: string }) => void | Promise<void>
   isLoading?: boolean
 }
 
@@ -29,12 +39,18 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
   const [config, setConfig] = useState<CloneConfirmationConfig>({
     title: '',
     description: '',
+    initialName: '',
+    initialAlias: '',
     onClone: () => {},
   })
+  const [name, setName] = useState('')
+  const [alias, setAlias] = useState('')
 
   useImperativeHandle(ref, () => ({
     open: (newConfig: CloneConfirmationConfig) => {
       setConfig(newConfig)
+      setName(newConfig.initialName)
+      setAlias(newConfig.initialAlias)
       setOpen(true)
     },
     close: () => setOpen(false),
@@ -43,8 +59,11 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
     },
   }))
 
+  const canClone = name.trim() !== '' && alias.trim() !== ''
+
   const handleClone = async () => {
-    await config.onClone()
+    if (!canClone) return
+    await config.onClone({ name, alias })
   }
 
   return (
@@ -73,6 +92,31 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
           </div>
         </DialogDescription>
 
+        <div className="flex flex-col gap-3 px-3">
+          <div className="flex flex-col">
+            <Label htmlFor="clone-name">Name</Label>
+            <Input
+              id="clone-name"
+              value={name}
+              autoFocus
+              onChange={(e) => {
+                setName(e.target.value)
+                setAlias(slugify(e.target.value))
+              }}
+              disabled={config.isLoading}
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label htmlFor="clone-alias">Alias</Label>
+            <Input
+              id="clone-alias"
+              value={alias}
+              onChange={(e) => setAlias(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
+              disabled={config.isLoading}
+            />
+          </div>
+        </div>
+
         <DialogFooter className="mt-3">
           <div className="flex w-full justify-center gap-2">
             <DialogClose asChild>
@@ -81,7 +125,10 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
               </Button>
             </DialogClose>
 
-            <Button className="w-1/2" onClick={handleClone} disabled={config.isLoading}>
+            <Button
+              className="w-1/2"
+              onClick={handleClone}
+              disabled={config.isLoading || !canClone}>
               {config.isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
