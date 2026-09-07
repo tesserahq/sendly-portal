@@ -229,7 +229,7 @@ export function TemplateFormContent({
   }
 
   return (
-    <div className="p-4 md:p-0">
+    <div className="p-4">
       <DetailContent title={isEditing ? 'Edit Template' : 'New Template'}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">
@@ -333,7 +333,7 @@ export function TemplateFormContent({
             <div className="flex lg:flex-row flex-col items-start gap-5 justify-between">
               <div className="w-full lg:w-1/2">
                 <Label className="text-sm font-medium">Tags</Label>
-                <div className="mt-1.5">
+                <div className="">
                   <TagsInput value={tags} onChange={setTags} />
                 </div>
               </div>
