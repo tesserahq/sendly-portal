@@ -16,7 +16,7 @@ import {
   useTemplate,
   useUpdateTemplate,
 } from '@/resources/hooks/template/use-template'
-import { uploadAssets } from '@/resources/queries/vaulta'
+import { getAssetServeUrl, uploadAssets } from '@/resources/queries/vaulta'
 import Editor from '@monaco-editor/react'
 import { Button } from '@shadcn/ui/button'
 import {
@@ -158,7 +158,7 @@ export function TemplateFormContent({
         { file, expires_in: SIX_MONTHS_IN_SECONDS }
       )
       if (!asset) throw new Error('Vaulta upload failed')
-      return { url: asset.url }
+      return { url: getAssetServeUrl(vaultaApiUrl, asset) }
     } catch (error) {
       handleApiError(error)
       throw error
