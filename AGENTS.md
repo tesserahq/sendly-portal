@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to coding agents (Claude Code, Codex, ...) when working with code in this repository.
 
 ## What this app is
 
@@ -60,6 +60,8 @@ Every query fn takes an `IQueryConfig` (`{ apiUrl, token, nodeEnv }`, defined in
 **HTTP client**: `fetchApi(endpoint, token, nodeEnv, options)` in [app/libraries/fetch.ts](app/libraries/fetch.ts) is the single fetch wrapper used by every query fn — it sets the `Authorization: Bearer` header, JSON-decodes responses, and throws `TokenExpiredError` (401) / `UnauthorizedError` (403) / generic `Error` on other 4xx+. In development it also logs an equivalent `curl` command for every request (via `curl-generator`) — useful for reproducing API calls outside the browser.
 
 **Auth/identity**: `tessera-ui` (a separate internal git-dependency package, `git+https://github.com/tesserahq/tessera-ui.git`, source at `node_modules/tessera-ui/src`) provides `TesseraProvider`/`useApp()` (`{ token, user, isLoadingIdenties, applications, ... }`), the `AuthGuard`, main `Layout`, and several shared components (`ResourceID`, `DateTime`, `EmptyContent`, `DeleteConfirmation`, `toast`, `AppPreloader`). Prefer reusing a `tessera-ui` component before writing a new one for common needs (delete confirmation, date formatting, empty states, resource-ID display, toasts). There is currently **no per-project/org scoping** anywhere in the frontend — no project selector, no project_id in resource types — auth is single-tenant per deployed portal instance.
+
+**Images embedded in emails (Vaulta assets)**: when an uploaded image goes into email/template HTML, use `getAssetServeUrl(vaultaApiUrl, asset)` from `@/resources/queries/vaulta`, **never `asset.url`**. `asset.url` is a raw S3 presigned URL that expires with the signing credentials (7 days at most), so images break in emails that were already sent. `serve_url` is Vaulta's signed link that honours the upload's `expires_in` (we request 6 months). The resulting URL is baked into sent emails, so don't change how it's built without considering links already in inboxes (see tesserahq/looply-portal#168, tesserahq/vaulta#153).
 
 **UI components**: shadcn/ui primitives live under `app/modules/shadcn/ui` and are imported via the `@shadcn/*` alias (e.g. `@shadcn/ui/button`), separate from `tessera-ui`'s shared components. Styling is Tailwind CSS v4.
 
