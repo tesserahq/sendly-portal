@@ -68,7 +68,7 @@ export function Header({ isExpanded, setIsExpanded, action, withSidebar, apps }:
               {action && (
                 <Separator
                   orientation="vertical"
-                  className="mr-1.5 h-3 bg-slate-400 dark:bg-slate-500"
+                  className="mr-1.5 h-3 bg-muted dark:bg-muted"
                 />
               )}
               {action}

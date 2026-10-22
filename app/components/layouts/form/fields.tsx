@@ -63,8 +63,8 @@ export function LayoutFormFields({
         </Label>
         {isMissingContentPlaceholder && (
           <div
-            className="flex items-center gap-2 rounded border border-yellow-400 bg-yellow-50 px-3
-              py-2 text-sm text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300">
+            className="flex items-center gap-2 rounded border border-accent bg-accent px-3
+              py-2 text-sm text-accent-foreground dark:bg-accent/20 dark:text-accent-foreground">
             <AlertTriangle size={14} className="shrink-0" />
             <span>
               Layout HTML must contain <code className="font-mono">${'{content}'}</code> — this is

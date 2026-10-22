@@ -31,7 +31,7 @@ export function GenericErrorBoundary({
 
   return (
     <div
-      className="dark:text-primary-foreground flex h-full w-full flex-col items-center
+      className="dark:text-foreground flex h-full w-full flex-col items-center
         justify-center">
       {isRouteErrorResponse(error)
         ? (statusHandlers?.[error.status] ?? defaultStatusHandler)({

@@ -73,7 +73,7 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
           <div
             className="bg-primary -mt-16 flex h-16 w-16 items-center justify-center rounded-full
               p-3">
-            <CopyCheck size={100} className="text-white" />
+            <CopyCheck size={100} className="text-primary-foreground" />
           </div>
           <DialogTitle className="hidden"></DialogTitle>
         </DialogHeader>
@@ -81,11 +81,11 @@ export const CloneTemplateDialog = forwardRef<CloneTemplateDialogHandle, object>
           <div className="flex flex-col items-center max-w-md wrap-break-word">
             <h1
               className="dark:text-secondary-foreground text-center text-3xl font-semibold
-                text-black">
+                text-foreground">
               {config.title}
             </h1>
             <p
-              className="dark:text-secondary-foreground mt-3 text-center text-base text-black
+              className="dark:text-secondary-foreground mt-3 text-center text-base text-foreground
                 max-w-sm wrap-break-word overflow-hidden text-ellipsis">
               {config.description}
             </p>
