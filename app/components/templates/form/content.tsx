@@ -155,7 +155,7 @@ export function TemplateFormContent({
     try {
       const asset = await uploadAssets(
         { apiUrl: vaultaApiUrl, token, nodeEnv },
-        { file, expires_in: SIX_MONTHS_IN_SECONDS }
+        { file, project_id: '*', visibility: 'shareable', expires_in: SIX_MONTHS_IN_SECONDS }
       )
       if (!asset) throw new Error('Vaulta upload failed')
       return { url: getAssetServeUrl(vaultaApiUrl, asset) }
