@@ -4,7 +4,7 @@ import { ROUTE_PATH as THEME_PATH } from '@/routes/resources/update-theme'
 import { SITE_CONFIG } from '@/utils/config/site.config'
 import { Building2, FileText, History, LayoutTemplate, Send } from 'lucide-react'
 import { Outlet, useNavigate, useParams, useSubmit } from 'react-router'
-import { AuthGuard, Layout, MainItemProps } from 'tessera-ui'
+import { Layout, MainItemProps } from 'tessera-ui'
 
 export default function PrivateLayout() {
   const requestInfo = useRequestInfo()

@@ -6,10 +6,10 @@ type EventType = keyof typeof eventTypeConfig
 
 export const getStatusBadgeProps = (status?: boolean) => {
   if (status) {
-    return { className: 'border-green-500 text-green-600' }
+    return { className: 'border-primary/30 text-primary' }
   }
 
-  return { className: 'border-gray-500 text-gray-600' }
+  return { className: 'border-border text-muted-foreground' }
 }
 
 export const getEmailStatusBadge = (
@@ -20,21 +20,21 @@ export const getEmailStatusBadge = (
     case 'sent':
       return {
         variant: 'default',
-        className: 'bg-emerald-400/10 border-emerald-500 text-emerald-500',
+        className: 'bg-primary/10 border-primary/30 text-primary',
       }
     case 'bounced':
     case 'failed':
       return {
         variant: 'outline',
-        className: 'border-orange-400 text-orange-400 bg-orange-500/10',
+        className: 'border-destructive/30 text-destructive bg-destructive/10',
       }
     case 'queued':
       return {
         variant: 'outline',
-        className: 'border-yellow-500 text-yellow-500 bg-yellow-500/10',
+        className: 'border-accent text-accent-foreground bg-accent/10',
       }
     default:
-      return { variant: 'outline', className: 'border-gray-500 text-gray-600' }
+      return { variant: 'outline', className: 'border-border text-muted-foreground' }
   }
 }
 
@@ -64,14 +64,14 @@ export const getRecipientOutcomeBadge = (
 ): { variant: BadgeProps['variant']; className: string } => {
   switch (outcome) {
     case 'suppressed':
-      return { variant: 'outline', className: 'border-gray-400 text-gray-600 bg-gray-500/5' }
+      return { variant: 'outline', className: 'border-border text-muted-foreground bg-muted/5' }
     case 'pending':
       return {
         variant: 'outline',
-        className: 'border-yellow-500 text-yellow-600 bg-yellow-500/5',
+        className: 'border-accent text-accent-foreground bg-accent/5',
       }
     case 'failed':
-      return { variant: 'destructive', className: 'bg-rose-600 text-white' }
+      return { variant: 'destructive', className: 'bg-destructive text-destructive-foreground' }
   }
 }
 
@@ -82,38 +82,38 @@ export const getEmailEventTypeBadge = (
     case 'delivered':
       return {
         variant: 'default',
-        className: 'bg-emerald-600 text-white',
+        className: 'bg-primary text-primary-foreground',
       }
 
     case 'opened':
       return {
         variant: 'outline',
-        className: 'border-sky-400 text-sky-700 bg-sky-500/5',
+        className: 'border-primary/30 text-primary bg-primary/5',
       }
 
     case 'clicked':
       return {
         variant: 'outline',
-        className: 'border-indigo-400 text-indigo-700 bg-indigo-500/5',
+        className: 'border-primary/30 text-primary bg-primary/5',
       }
 
     case 'bounced':
       return {
         variant: 'destructive',
-        className: 'bg-rose-600 text-white',
+        className: 'bg-destructive text-destructive-foreground',
       }
 
     case 'complained':
       return {
         variant: 'outline',
-        className: 'border-orange-400 text-orange-700 bg-orange-500/5',
+        className: 'border-accent text-accent-foreground bg-accent/5',
       }
 
     case 'unknown':
     default:
       return {
         variant: 'outline',
-        className: 'border-gray-400 text-gray-600 bg-gray-500/5',
+        className: 'border-border text-muted-foreground bg-muted/5',
       }
   }
 }
