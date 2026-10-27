@@ -112,3 +112,4 @@
 - ESLint and Prettier are configured for consistent code formatting
 - The app includes internationalization support with i18next
 - Authentication is handled through Auth0 integration
+- Centralized base color by tessera ui
