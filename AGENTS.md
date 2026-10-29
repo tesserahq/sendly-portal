@@ -34,7 +34,7 @@ bun run test:coverage  # vitest run --coverage
 ```
 
 Run a single test file: `bun run test -- path/to/file.test.tsx` (or `bunx vitest run path/to/file.test.tsx`).
-Test files live alongside code and match `**/*.{test,spec}.{ts,tsx}` or `**/__tests__/**` (see `vite.config.ts`). There are currently no test files in the repo yet, but the vitest/jsdom/testing-library setup is fully wired (`vitest.setup.ts` mocks `lucide-react` icons and runs RTL `cleanup()` after each test).
+Test files live alongside code and match `**/*.{test,spec}.{ts,tsx}` or `**/__tests__/**` (see `vite.config.ts`). Vitest, jsdom, and Testing Library are configured; `vitest.setup.ts` mocks `lucide-react` icons and runs RTL `cleanup()` after each test.
 
 **Pre-commit**: `lefthook` runs `eslint --fix` and `prettier --write` on staged `.js/.jsx/.ts/.tsx(/.json)` files automatically (see `lefthook.yml`). Run `bun run prepare` once after cloning to install the git hook.
 
