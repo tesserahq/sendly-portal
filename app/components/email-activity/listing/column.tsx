@@ -1,4 +1,4 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { LegacyColumnDef as ColumnDef } from '@tanstack/react-table/legacy'
 import { Badge } from '@/modules/shadcn/ui/badge'
 import { getEmailStatusBadge } from '@/utils/helpers/badge.helper'
 import { EmailActivityType } from '@/resources/queries/email-activity'
