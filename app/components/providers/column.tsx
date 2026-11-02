@@ -1,4 +1,4 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { LegacyColumnDef as ColumnDef } from '@tanstack/react-table/legacy'
 import { ProviderType } from '@/resources/queries/provider/provider.type'
 import { getStatusBadgeProps } from '@/utils/helpers/badge.helper'
 import { Badge } from '@/modules/shadcn/ui/badge'

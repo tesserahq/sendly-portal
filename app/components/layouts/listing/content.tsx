@@ -4,7 +4,7 @@ import { useDeleteLayout, useLayouts } from '@/resources/hooks/layout/use-layout
 import { LayoutType } from '@/resources/queries/layout'
 import { Button } from '@shadcn/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@shadcn/ui/popover'
-import { ColumnDef } from '@tanstack/react-table'
+import type { LegacyColumnDef as ColumnDef } from '@tanstack/react-table/legacy'
 import { Edit, EyeIcon, MoreVertical, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
